@@ -2,6 +2,7 @@ package com.nemo.cineman.entity
 
 import androidx.room.Database
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 
 //{
@@ -30,6 +31,7 @@ data class Movie(
     val adult: Boolean,
     val backdrop_path: String?,
     val genre_ids: List<Int>,
+    @PrimaryKey
     val id: Int,
     val original_language: String,
     val original_title: String,
