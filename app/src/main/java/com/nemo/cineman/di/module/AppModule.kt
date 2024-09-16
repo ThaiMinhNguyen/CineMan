@@ -20,7 +20,7 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun provideRetrofit() : Retrofit = Retrofit.Builder().baseUrl("").addConverterFactory(GsonConverterFactory.create()).build()
+    fun provideRetrofit() : Retrofit = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3").addConverterFactory(GsonConverterFactory.create()).build()
 
     @Provides
     @Singleton

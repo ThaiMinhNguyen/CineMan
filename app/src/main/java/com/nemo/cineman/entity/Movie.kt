@@ -1,8 +1,11 @@
 package com.nemo.cineman.entity
 
+import android.os.Parcelable
 import androidx.room.Database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
 
 //{
@@ -27,6 +30,7 @@ import androidx.room.PrimaryKey
 //}
 
 @Entity(tableName = "movies")
+@Parcelize
 data class Movie(
     val adult: Boolean,
     val backdrop_path: String?,
@@ -43,4 +47,9 @@ data class Movie(
     val video: Boolean,
     val vote_average: Double,
     val vote_count: Int
+) : Parcelable
+
+
+data class MovieResponse(
+    val results: List<Movie>
 )
