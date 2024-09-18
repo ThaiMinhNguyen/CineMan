@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.nemo.cineman.MyHiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -44,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
     packaging {
         resources {
@@ -77,8 +77,21 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-android-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.glide)
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
+    androidTestImplementation(libs.androidx.junit.v113)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.core.testing)
+    testImplementation("com.google.dagger:hilt-android-testing:2.52")
+    kaptTest("com.google.dagger:hilt-android-compiler:2.52")
+    testAnnotationProcessor("com.google.dagger:hilt-android-compiler:2.52")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.52")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.52")
+    androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:2.52")
+    testImplementation("io.mockk:mockk:1.13.12")
+
+
 }
