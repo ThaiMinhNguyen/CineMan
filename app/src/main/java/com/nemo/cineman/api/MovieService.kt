@@ -79,4 +79,14 @@ interface MovieService {
         @Path("movie_id") movieId: Int
     ): Call<MovieCertification>
 
+    @Headers(
+        "accept: application/json",
+        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+    )
+    @GET("/movie/{movie_id}/similar")
+    fun getSimilarMovie(
+        @Path("movie_id") movieId: Int,
+        @Query("page") page: Int
+    ) : Call<MovieResponse>
+
 }
