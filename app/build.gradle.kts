@@ -92,6 +92,7 @@ dependencies {
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.52")
     androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:2.52")
     testImplementation("io.mockk:mockk:1.13.12")
-
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
 
 }
