@@ -12,6 +12,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -34,8 +36,23 @@ class RoomTest {
 
     @Test
     fun insertAndTakeLocalMovie(){
+        val latch = CountDownLatch(1)  // Tạo latch để chờ API trả về
+        
         val movies = movieRepository.getLocalMovie()
         assertEquals(0, movies.size)
-        println(movieRepository.fetchMovie().toString())
+
+        // Gọi API để lấy danh sách phim
+        movieRepository.fetchMovie { result ->
+            if (result.isSuccess) {
+                val moviesList = result.getOrNull()
+                println("Movies: $moviesList")  // In ra danh sách phim
+            } else {
+                val error = result.exceptionOrNull()
+                println("Error: ${error?.message}")  // In ra lỗi nếu có
+            }
+            latch.countDown()  // Giảm count của latch sau khi có kết quả
+        }
+
+        latch.await(5, TimeUnit.SECONDS)  // Chờ tối đa 5 giây cho API trả về
     }
 }
