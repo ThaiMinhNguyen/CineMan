@@ -14,7 +14,9 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,5 +52,12 @@ fun MenuScreen(navController: NavController){
        )
 
    }
+}
+
+@Preview
+@Composable
+fun MenuPreview(){
+    val navController = rememberNavController()
+    MenuScreen(navController = navController)
 }
 
