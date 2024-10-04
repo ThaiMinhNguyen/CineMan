@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.runner.AndroidJUnitRunner
 import com.nemo.cineman.api.MovieRepository
+import com.nemo.cineman.viewmodel.MainViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Assert.assertEquals
@@ -25,6 +26,7 @@ class RoomTest {
     @Inject
     lateinit var movieRepository: MovieRepository
 
+
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
@@ -42,7 +44,7 @@ class RoomTest {
         assertEquals(0, movies.size)
 
         // Gọi API để lấy danh sách phim
-        movieRepository.fetchMovie { result ->
+        movieRepository.fetchMovie ({ result ->
             if (result.isSuccess) {
                 val moviesList = result.getOrNull()
                 println("Movies: $moviesList")  // In ra danh sách phim
@@ -51,7 +53,9 @@ class RoomTest {
                 println("Error: ${error?.message}")  // In ra lỗi nếu có
             }
             latch.countDown()  // Giảm count của latch sau khi có kết quả
-        }
+        },1)
+
+
 
         latch.await(5, TimeUnit.SECONDS)  // Chờ tối đa 5 giây cho API trả về
     }

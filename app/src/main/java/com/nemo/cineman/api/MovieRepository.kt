@@ -1,6 +1,7 @@
 package com.nemo.cineman.api
 
 import com.nemo.cineman.entity.Movie
+import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieDao
 import com.nemo.cineman.entity.MovieResponse
 import retrofit2.Call
@@ -20,8 +21,8 @@ class MovieRepository @Inject constructor(
         movieDao.insertMovie(movies)
     }
 
-    fun fetchMovie(callback: (Result<List<Movie>?>) -> Unit) {
-        val call = movieService.getNowPlayingMovies("en-US", 1)
+    fun fetchMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
+        val call = movieService.getNowPlayingMovies("en-US", page)
         call.enqueue(object: Callback<MovieResponse>{
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                 if(response.isSuccessful){
@@ -34,7 +35,28 @@ class MovieRepository @Inject constructor(
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                callback(Result.failure(t))
+            }
 
+        })
+    }
+
+    suspend fun getMovieCertification(callback: (Result<MovieCertification?>) -> Unit, id: Int){
+        val call = movieService.getMovieCert(id)
+        call.enqueue(object: Callback<MovieCertification>{
+            override fun onResponse(
+                call: Call<MovieCertification>,
+                response: Response<MovieCertification>
+            ) {
+                if(response.isSuccessful){
+                    val movieCert = response.body()
+                    callback(Result.success(movieCert))
+                } else {
+                    callback(Result.failure(Throwable("Error: ${response.errorBody()?.string()}")))
+                }
+            }
+
+            override fun onFailure(call: Call<MovieCertification>, t: Throwable) {
                 callback(Result.failure(t))
             }
 

@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nemo.cineman.api.MovieRepository
 import com.nemo.cineman.entity.Movie
+import com.nemo.cineman.entity.MovieCertification
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,11 +20,11 @@ class MainViewModel @Inject constructor(
     val movies: LiveData<List<Movie>> get() = _movies
 
     init {
-        fetchMovies()
+        fetchMovies(1)
     }
 
-    private fun fetchMovies() {
-        movieRepository.fetchMovie { result ->
+    fun fetchMovies(page: Int) {
+        movieRepository.fetchMovie ({ result ->
             result.onSuccess { movies ->
                 if (movies != null) {
                     movieRepository.insertLocalMovie(movies) // Lưu vào cơ sở dữ liệu
@@ -33,6 +36,21 @@ class MainViewModel @Inject constructor(
 
                 Log.e("MovieViewModel", "Failed to fetch movies: ${exception.message}")
             }
+        },page)
+    }
+
+    fun getMovieCertification(id: Int) : MovieCertification?{
+        var movieCertification : MovieCertification? = null
+        viewModelScope.launch{
+            movieRepository.getMovieCertification({ result ->
+                result.onSuccess { movieCert ->
+                    movieCertification = movieCert!!
+                }.onFailure { exception ->
+                    movieCertification = null
+                    Log.e("MovieViewModel", "Failed to fetch movieCert: ${exception.message}")
+                }
+            },id)
         }
+        return movieCertification
     }
 }

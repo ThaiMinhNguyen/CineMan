@@ -8,27 +8,6 @@ import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 
-//{
-//    "adult": false,
-//    "backdrop_path": "/yDHYTfA3R0jFYba16jBB1ef8oIt.jpg",
-//    "genre_ids": [
-//    28,
-//    35,
-//    878
-//    ],
-//    "id": 533535,
-//    "original_language": "en",
-//    "original_title": "Deadpool & Wolverine",
-//    "overview": "A listless Wade Wilson toils away in civilian life with his days as the morally flexible mercenary, Deadpool, behind him. But when his homeworld faces an existential threat, Wade must reluctantly suit-up again with an even more reluctant Wolverine.",
-//    "popularity": 3500.919,
-//    "poster_path": "/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
-//    "release_date": "2024-07-24",
-//    "title": "Deadpool & Wolverine",
-//    "video": false,
-//    "vote_average": 7.752,
-//    "vote_count": 2692
-//}
-
 @Entity(tableName = "movies")
 @Parcelize
 data class Movie(
@@ -52,4 +31,25 @@ data class Movie(
 
 data class MovieResponse(
     val results: List<Movie>
+)
+
+
+
+data class MovieCertification(
+    val id: Int,
+    val results: List<CertificationResult>
+)
+
+data class CertificationResult(
+    val iso_3166_1: String,
+    val release_dates: List<ReleaseDate>
+)
+
+data class ReleaseDate(
+    val certification: String,
+    val descriptors: List<String>,
+    val iso_639_1: String,
+    val note: String,
+    val release_date: String,
+    val type: Int
 )
