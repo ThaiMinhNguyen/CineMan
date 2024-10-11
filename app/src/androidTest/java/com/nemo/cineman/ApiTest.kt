@@ -54,7 +54,7 @@ class ApiTest {
 
 
         mainViewModel.fetchMovies(1)
-//        Log.d("MyLog", mainViewModel.movies.value.toString())
+        Log.d("MyLog", mainViewModel.getSimilarMovie(213213, 1).toString())
 
         latch.await(5, TimeUnit.SECONDS)
 

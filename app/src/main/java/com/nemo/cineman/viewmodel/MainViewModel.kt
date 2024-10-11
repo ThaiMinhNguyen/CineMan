@@ -53,4 +53,20 @@ class MainViewModel @Inject constructor(
         }
         return movieCertification
     }
+
+    fun getSimilarMovie(id: Int, page: Int) :  List<Movie>? {
+        var similarMovie : List<Movie>? = null
+        viewModelScope.launch {
+            movieRepository.fetchSimmilarMovie({result ->
+                result.onSuccess { movies ->
+                    similarMovie = movies
+
+                }.onFailure { exception ->
+                    similarMovie = null
+                    Log.e("MovieViewModel", "Failed to fetch similar movie: ${exception.message}")
+                }
+            },id, page)
+        }
+        return similarMovie
+    }
 }

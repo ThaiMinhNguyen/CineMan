@@ -62,4 +62,23 @@ class MovieRepository @Inject constructor(
 
         })
     }
+
+    suspend fun fetchSimmilarMovie(callback: (Result<List<Movie>?>) -> Unit, id: Int, page: Int){
+        val call = movieService.getSimilarMovie(id, page)
+        call.enqueue(object : Callback<MovieResponse>{
+            override fun onResponse(p0: Call<MovieResponse>, response: Response<MovieResponse>) {
+                if(response.isSuccessful){
+                    val movies = response.body()?.results
+                    callback(Result.success(movies))
+                }else{
+                    callback(Result.failure(Throwable("Error: $${response.errorBody()?.string()}")))
+                }
+            }
+
+            override fun onFailure(p0: Call<MovieResponse>, p1: Throwable) {
+                callback(Result.failure(p1))
+            }
+
+        })
+    }
 }
