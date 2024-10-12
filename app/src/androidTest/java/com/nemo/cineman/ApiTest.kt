@@ -43,7 +43,9 @@ class ApiTest {
     @Test
     fun fetchMovie(){
 
-        var latch = CountDownLatch(1)
+        var latch = CountDownLatch(2)
+
+
 
         mainViewModel.movies.observeForever { movies ->
             if (movies != null) {
@@ -52,9 +54,16 @@ class ApiTest {
             }
         }
 
+        mainViewModel.similarMovies.observeForever { movies ->
+            if (movies != null) {
+                Log.d("MyLog", "Fetched similar movies: $movies")
+                latch.countDown()
+            }
+        }
 
-        mainViewModel.fetchMovies(1)
-        Log.d("MyLog", mainViewModel.getSimilarMovie(213213, 1).toString())
+        mainViewModel.getMovies(1)
+        mainViewModel.getSimilarMovie(213213, 1)
+
 
         latch.await(5, TimeUnit.SECONDS)
 

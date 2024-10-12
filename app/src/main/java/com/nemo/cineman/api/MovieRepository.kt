@@ -41,7 +41,7 @@ class MovieRepository @Inject constructor(
         })
     }
 
-    suspend fun getMovieCertification(callback: (Result<MovieCertification?>) -> Unit, id: Int){
+    suspend fun fetchMovieCertification(callback: (Result<MovieCertification?>) -> Unit, id: Int){
         val call = movieService.getMovieCert(id)
         call.enqueue(object: Callback<MovieCertification>{
             override fun onResponse(
@@ -81,4 +81,6 @@ class MovieRepository @Inject constructor(
 
         })
     }
+
+
 }

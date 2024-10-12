@@ -19,11 +19,14 @@ class MainViewModel @Inject constructor(
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> get() = _movies
 
-    init {
-        fetchMovies(1)
-    }
+    private val _similarMovies = MutableLiveData<List<Movie>>()
+    val similarMovies: LiveData<List<Movie>> get() = _similarMovies
 
-    fun fetchMovies(page: Int) {
+//    init {
+//        getMovies(1)
+//    }
+
+    fun getMovies(page: Int) {
         movieRepository.fetchMovie ({ result ->
             result.onSuccess { movies ->
                 if (movies != null) {
@@ -33,40 +36,37 @@ class MainViewModel @Inject constructor(
                     Log.d("MyLog", "No movie fetched")
                 }
             }.onFailure { exception ->
-
-                Log.e("MovieViewModel", "Failed to fetch movies: ${exception.message}")
+                Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
             }
         },page)
     }
 
-    fun getMovieCertification(id: Int) : MovieCertification?{
+    fun getMovieCertification(id: Int){
         var movieCertification : MovieCertification? = null
         viewModelScope.launch{
-            movieRepository.getMovieCertification({ result ->
+            movieRepository.fetchMovieCertification({ result ->
                 result.onSuccess { movieCert ->
                     movieCertification = movieCert!!
+                    Log.d("MyLog", "Fetch movie cert: ${movieCertification.toString()}")
                 }.onFailure { exception ->
                     movieCertification = null
-                    Log.e("MovieViewModel", "Failed to fetch movieCert: ${exception.message}")
+                    Log.d("MyLog", "Failed to fetch movieCert: ${exception.message}")
                 }
             },id)
         }
-        return movieCertification
+
     }
 
-    fun getSimilarMovie(id: Int, page: Int) :  List<Movie>? {
-        var similarMovie : List<Movie>? = null
+    fun getSimilarMovie(id: Int, page: Int) {
         viewModelScope.launch {
             movieRepository.fetchSimmilarMovie({result ->
                 result.onSuccess { movies ->
-                    similarMovie = movies
-
+                    _similarMovies.postValue(movies!!)
+                    Log.d("MyLog", "Fetch similar movie: ${movies}")
                 }.onFailure { exception ->
-                    similarMovie = null
-                    Log.e("MovieViewModel", "Failed to fetch similar movie: ${exception.message}")
+                    Log.e("MyLog", "Failed to fetch similar movie: ${exception.message}")
                 }
             },id, page)
         }
-        return similarMovie
     }
 }
