@@ -6,9 +6,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.nemo.cineman.api.MovieRepository
 import com.nemo.cineman.viewmodel.MainViewModel
+import com.nemo.cineman.viewmodel.MovieDetailViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +27,7 @@ class ApiTest {
     lateinit var movieRepository: MovieRepository
 
     lateinit var mainViewModel: MainViewModel
+    lateinit var movieDetailViewModel: MovieDetailViewModel
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -38,31 +39,40 @@ class ApiTest {
     fun setup(){
         hiltRule.inject()
         mainViewModel = MainViewModel(movieRepository)
+        movieDetailViewModel = MovieDetailViewModel(movieRepository)
     }
 
     @Test
     fun fetchMovie(){
 
-        var latch = CountDownLatch(2)
+        var latch = CountDownLatch(3)
 
 
 
-        mainViewModel.movies.observeForever { movies ->
+        mainViewModel.nowPlayingMovies.observeForever { movies ->
             if (movies != null) {
-                Log.d("MyLog", "Fetched movies: $movies")
+                Log.d("MyLogTest", "Fetched movies: $movies")
                 latch.countDown()
             }
         }
 
-        mainViewModel.similarMovies.observeForever { movies ->
+        movieDetailViewModel.similarMovies.observeForever { movies ->
             if (movies != null) {
-                Log.d("MyLog", "Fetched similar movies: $movies")
+                Log.d("MyLogTest", "Fetched similar movies: $movies")
                 latch.countDown()
             }
         }
 
-        mainViewModel.getMovies(1)
-        mainViewModel.getSimilarMovie(213213, 1)
+        movieDetailViewModel.videoResults.observeForever { videos ->
+            if (videos != null) {
+                Log.d("MyLogTest", "Fetched movie trailers: $videos")
+                latch.countDown()
+            }
+        }
+
+        mainViewModel.getNowPlayingMovies(1)
+        movieDetailViewModel.getSimilarMovie(213213, 1)
+        movieDetailViewModel.getMovieTrailer(533535)
 
 
         latch.await(5, TimeUnit.SECONDS)

@@ -3,6 +3,7 @@ package com.nemo.cineman.api
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieResponse
+import com.nemo.cineman.entity.VideoResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -97,7 +98,7 @@ interface MovieService {
     @GET("movie/{movie_id}/videos")
     fun getMovieTrailer(
         @Path("movie_id") movieId: Int
-    ) : Call<MovieResponse>
+    ) : Call<VideoResponse>
 
 
 }

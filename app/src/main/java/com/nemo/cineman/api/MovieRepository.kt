@@ -4,6 +4,8 @@ import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieDao
 import com.nemo.cineman.entity.MovieResponse
+import com.nemo.cineman.entity.VideoResponse
+import com.nemo.cineman.entity.VideoResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +23,7 @@ class MovieRepository @Inject constructor(
         movieDao.insertMovie(movies)
     }
 
-    fun fetchMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
+    fun fetchNowPlayingMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
         val call = movieService.getNowPlayingMovies("en-US", page)
         call.enqueue(object: Callback<MovieResponse>{
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
@@ -41,7 +43,27 @@ class MovieRepository @Inject constructor(
         })
     }
 
-    suspend fun fetchMovieCertification(callback: (Result<MovieCertification?>) -> Unit, id: Int){
+    fun fetchPopularMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
+        val call = movieService.getPopularMovies("en-US", page)
+        call.enqueue(object: Callback<MovieResponse>{
+            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
+                if(response.isSuccessful){
+                    val movies = response.body()?.results
+                    callback(Result.success(movies))
+                } else {
+
+                    callback(Result.failure(Throwable("Error: ${response.errorBody()?.string()}")))
+                }
+            }
+
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                callback(Result.failure(t))
+            }
+
+        })
+    }
+
+    fun fetchMovieCertification(callback: (Result<MovieCertification?>) -> Unit, id: Int){
         val call = movieService.getMovieCert(id)
         call.enqueue(object: Callback<MovieCertification>{
             override fun onResponse(
@@ -63,7 +85,7 @@ class MovieRepository @Inject constructor(
         })
     }
 
-    suspend fun fetchSimmilarMovie(callback: (Result<List<Movie>?>) -> Unit, id: Int, page: Int){
+    fun fetchSimmilarMovie(callback: (Result<List<Movie>?>) -> Unit, id: Int, page: Int){
         val call = movieService.getSimilarMovie(id, page)
         call.enqueue(object : Callback<MovieResponse>{
             override fun onResponse(p0: Call<MovieResponse>, response: Response<MovieResponse>) {
@@ -82,5 +104,23 @@ class MovieRepository @Inject constructor(
         })
     }
 
+    fun fetchMovieTrailer(callback: (Result<List<VideoResult>?>) -> Unit, id: Int){
+        val call = movieService.getMovieTrailer(id)
+        call.enqueue(object: Callback<VideoResponse>{
+            override fun onResponse(call: Call<VideoResponse>, response: Response<VideoResponse>) {
+                if(response.isSuccessful){
+                    val videoResponse = response.body()?.results
+                    callback(Result.success(videoResponse))
+                } else {
+                    callback(Result.failure(Throwable("Error: $${response.errorBody()?.string()}")))
+                }
+            }
+
+            override fun onFailure(call: Call<VideoResponse>, t: Throwable) {
+                callback(Result.failure(t))
+            }
+
+        })
+    }
 
 }

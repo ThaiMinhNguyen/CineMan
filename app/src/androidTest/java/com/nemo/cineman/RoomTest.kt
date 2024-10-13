@@ -1,11 +1,8 @@
 package com.nemo.cineman
 
-import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import androidx.test.runner.AndroidJUnitRunner
 import com.nemo.cineman.api.MovieRepository
-import com.nemo.cineman.viewmodel.MainViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Assert.assertEquals
@@ -44,7 +41,7 @@ class RoomTest {
         assertEquals(0, movies.size)
 
         // Gọi API để lấy danh sách phim
-        movieRepository.fetchMovie ({ result ->
+        movieRepository.fetchNowPlayingMovie ({ result ->
             if (result.isSuccess) {
                 val moviesList = result.getOrNull()
                 println("Movies: $moviesList")  // In ra danh sách phim

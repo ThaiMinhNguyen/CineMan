@@ -16,22 +16,24 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
-    private val _movies = MutableLiveData<List<Movie>>()
-    val movies: LiveData<List<Movie>> get() = _movies
+    private val _nowPlayingMovies = MutableLiveData<List<Movie>>()
+    val nowPlayingMovies: LiveData<List<Movie>> get() = _nowPlayingMovies
 
-    private val _similarMovies = MutableLiveData<List<Movie>>()
-    val similarMovies: LiveData<List<Movie>> get() = _similarMovies
+    private val _popularMovies = MutableLiveData<List<Movie>>()
+    val popularMovies: LiveData<List<Movie>> get() = _popularMovies
+
+
 
 //    init {
 //        getMovies(1)
 //    }
 
-    fun getMovies(page: Int) {
-        movieRepository.fetchMovie ({ result ->
+    fun getNowPlayingMovies(page: Int) {
+        movieRepository.fetchNowPlayingMovie ({ result ->
             result.onSuccess { movies ->
                 if (movies != null) {
                     movieRepository.insertLocalMovie(movies) // Lưu vào cơ sở dữ liệu
-                    _movies.postValue(movies!!)
+                    _nowPlayingMovies.postValue(movies!!)
                 } else {
                     Log.d("MyLog", "No movie fetched")
                 }
@@ -40,6 +42,22 @@ class MainViewModel @Inject constructor(
             }
         },page)
     }
+
+    fun getPopularMovies(page: Int) {
+        movieRepository.fetchPopularMovie ({ result ->
+            result.onSuccess { movies ->
+                if (movies != null) {
+                    _popularMovies.postValue(movies!!)
+                } else {
+                    Log.d("MyLog", "No movie fetched")
+                }
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
+            }
+        },page)
+    }
+
+
 
     fun getMovieCertification(id: Int){
         var movieCertification : MovieCertification? = null
@@ -57,16 +75,5 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun getSimilarMovie(id: Int, page: Int) {
-        viewModelScope.launch {
-            movieRepository.fetchSimmilarMovie({result ->
-                result.onSuccess { movies ->
-                    _similarMovies.postValue(movies!!)
-                    Log.d("MyLog", "Fetch similar movie: ${movies}")
-                }.onFailure { exception ->
-                    Log.e("MyLog", "Failed to fetch similar movie: ${exception.message}")
-                }
-            },id, page)
-        }
-    }
+
 }

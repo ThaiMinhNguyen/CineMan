@@ -34,7 +34,6 @@ data class MovieResponse(
 )
 
 
-
 data class MovieCertification(
     val id: Int,
     val results: List<CertificationResult>
