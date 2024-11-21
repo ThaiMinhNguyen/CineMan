@@ -29,32 +29,37 @@ class MainViewModel @Inject constructor(
 //    }
 
     fun getNowPlayingMovies(page: Int) {
-        movieRepository.fetchNowPlayingMovie ({ result ->
-            result.onSuccess { movies ->
-                if (movies != null) {
-                    movieRepository.insertLocalMovie(movies) // Lưu vào cơ sở dữ liệu
-                    _nowPlayingMovies.postValue(movies!!)
-                } else {
-                    Log.d("MyLog", "No movie fetched")
+        viewModelScope.launch {
+            movieRepository.fetchNowPlayingMovie({ result ->
+                result.onSuccess { movies ->
+                    if (movies != null) {
+
+                        _nowPlayingMovies.postValue(movies!!)
+                    } else {
+                        Log.d("MyLog", "No movie fetched")
+                    }
+                }.onFailure { exception ->
+                    Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
                 }
-            }.onFailure { exception ->
-                Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
-            }
-        },page)
+            }, page)
+            nowPlayingMovies.value?.let { movieRepository.insertLocalMovie(it) }
+        }
     }
 
     fun getPopularMovies(page: Int) {
-        movieRepository.fetchPopularMovie ({ result ->
-            result.onSuccess { movies ->
-                if (movies != null) {
-                    _popularMovies.postValue(movies!!)
-                } else {
-                    Log.d("MyLog", "No movie fetched")
+        viewModelScope.launch {
+            movieRepository.fetchPopularMovie({ result ->
+                result.onSuccess { movies ->
+                    if (movies != null) {
+                        _popularMovies.postValue(movies!!)
+                    } else {
+                        Log.d("MyLog", "No movie fetched")
+                    }
+                }.onFailure { exception ->
+                    Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
                 }
-            }.onFailure { exception ->
-                Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
-            }
-        },page)
+            }, page)
+        }
     }
 
 

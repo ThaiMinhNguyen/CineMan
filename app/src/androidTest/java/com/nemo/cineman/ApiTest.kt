@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.nemo.cineman.api.AuthRepository
 import com.nemo.cineman.api.MovieRepository
+import com.nemo.cineman.viewmodel.AuthViewModel
 import com.nemo.cineman.viewmodel.MainViewModel
 import com.nemo.cineman.viewmodel.MovieDetailViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -26,8 +28,12 @@ class ApiTest {
     @Inject
     lateinit var movieRepository: MovieRepository
 
+    @Inject
+    lateinit var authRepository: AuthRepository
+
     lateinit var mainViewModel: MainViewModel
     lateinit var movieDetailViewModel: MovieDetailViewModel
+    lateinit var authViewModel: AuthViewModel
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -40,14 +46,13 @@ class ApiTest {
         hiltRule.inject()
         mainViewModel = MainViewModel(movieRepository)
         movieDetailViewModel = MovieDetailViewModel(movieRepository)
+        authViewModel = AuthViewModel(authRepository)
     }
 
     @Test
     fun fetchMovie(){
 
-        var latch = CountDownLatch(3)
-
-
+        var latch = CountDownLatch(4)
 
         mainViewModel.nowPlayingMovies.observeForever { movies ->
             if (movies != null) {
@@ -69,6 +74,8 @@ class ApiTest {
                 latch.countDown()
             }
         }
+
+
 
         mainViewModel.getNowPlayingMovies(1)
         movieDetailViewModel.getSimilarMovie(213213, 1)

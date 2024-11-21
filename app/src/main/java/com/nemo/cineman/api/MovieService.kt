@@ -15,8 +15,7 @@ interface MovieService {
     //======Movie List=======
 
     @Headers(
-        "accept: application/json",
-        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+        "accept: application/json"
     )
     @GET("movie/now_playing")
     fun getNowPlayingMovies(
@@ -26,8 +25,7 @@ interface MovieService {
 
 
     @Headers(
-        "accept: application/json",
-        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+        "accept: application/json"
     )
     @GET("movie/popular")
     fun getPopularMovies(
@@ -37,8 +35,7 @@ interface MovieService {
 
 
     @Headers(
-        "accept: application/json",
-        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+        "accept: application/json"
     )
     @GET("movie/top_rated")
     fun getTopRatedMovies(
@@ -48,8 +45,7 @@ interface MovieService {
 
 
     @Headers(
-        "accept: application/json",
-        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+        "accept: application/json"
     )
     @GET("movie/upcoming")
     fun getUpComingMovies(
@@ -62,8 +58,7 @@ interface MovieService {
     //==============Movie Detail===============
 
     @Headers(
-        "accept: application/json",
-        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+        "accept: application/json"
     )
     @GET("movie/{movie_id}")
     fun getMovieDetail(
@@ -72,8 +67,7 @@ interface MovieService {
 
 
     @Headers(
-        "accept: application/json",
-        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+        "accept: application/json"
     )
     @GET("movie/{movie_id}/release_dates")
     fun getMovieCert(
@@ -81,8 +75,7 @@ interface MovieService {
     ): Call<MovieCertification>
 
     @Headers(
-        "accept: application/json",
-        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+        "accept: application/json"
     )
     @GET("movie/{movie_id}/similar")
     fun getSimilarMovie(
@@ -92,8 +85,7 @@ interface MovieService {
 
 
     @Headers(
-        "accept: application/json",
-        "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZGMyNjYxMGZmOWI1MmNmNTAxMzM2MzFlOGQ5YzlkOCIsIm5iZiI6MTcyNjA2MTA2My45NDE5Nywic3ViIjoiNjZkZGE3MTA0MGZiYzEwOThiMzhiZmViIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hfH63RKuXrt8vdumBrFL7TRzXwPXAppHznTC9ZE5Sk0"
+        "accept: application/json"
     )
     @GET("movie/{movie_id}/videos")
     fun getMovieTrailer(

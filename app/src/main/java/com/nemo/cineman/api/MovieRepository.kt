@@ -23,7 +23,7 @@ class MovieRepository @Inject constructor(
         movieDao.insertMovie(movies)
     }
 
-    fun fetchNowPlayingMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
+    suspend fun fetchNowPlayingMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
         val call = movieService.getNowPlayingMovies("en-US", page)
         call.enqueue(object: Callback<MovieResponse>{
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
@@ -43,7 +43,7 @@ class MovieRepository @Inject constructor(
         })
     }
 
-    fun fetchPopularMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
+    suspend fun fetchPopularMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
         val call = movieService.getPopularMovies("en-US", page)
         call.enqueue(object: Callback<MovieResponse>{
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
@@ -63,7 +63,7 @@ class MovieRepository @Inject constructor(
         })
     }
 
-    fun fetchMovieCertification(callback: (Result<MovieCertification?>) -> Unit, id: Int){
+    suspend fun fetchMovieCertification(callback: (Result<MovieCertification?>) -> Unit, id: Int){
         val call = movieService.getMovieCert(id)
         call.enqueue(object: Callback<MovieCertification>{
             override fun onResponse(
@@ -85,7 +85,7 @@ class MovieRepository @Inject constructor(
         })
     }
 
-    fun fetchSimmilarMovie(callback: (Result<List<Movie>?>) -> Unit, id: Int, page: Int){
+    suspend fun fetchSimmilarMovie(callback: (Result<List<Movie>?>) -> Unit, id: Int, page: Int){
         val call = movieService.getSimilarMovie(id, page)
         call.enqueue(object : Callback<MovieResponse>{
             override fun onResponse(p0: Call<MovieResponse>, response: Response<MovieResponse>) {
@@ -104,7 +104,7 @@ class MovieRepository @Inject constructor(
         })
     }
 
-    fun fetchMovieTrailer(callback: (Result<List<VideoResult>?>) -> Unit, id: Int){
+    suspend fun fetchMovieTrailer(callback: (Result<List<VideoResult>?>) -> Unit, id: Int){
         val call = movieService.getMovieTrailer(id)
         call.enqueue(object: Callback<VideoResponse>{
             override fun onResponse(call: Call<VideoResponse>, response: Response<VideoResponse>) {
