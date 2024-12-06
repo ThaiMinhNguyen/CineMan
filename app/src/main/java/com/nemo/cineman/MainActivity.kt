@@ -34,9 +34,9 @@ class MainActivity : ComponentActivity() {
                    val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = "home"
+                        startDestination = "login"
                     ) {
-                        composable(route = "home") {
+                        composable(route = "login") {
                             LoginScreen(navController = navController)
                         }
                         composable(route = "menu") {
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
                             // Lấy tham số URL từ arguments
                             val url = backStackEntry.arguments?.getString("url") ?: "https://www.google.com"  // Nếu URL rỗng hoặc null, dùng Google
                             val decodedUrl = Uri.decode(url)
-                            WebViewScreen(url = decodedUrl)
+                            WebViewScreen(url = decodedUrl, navController)
                         }
                     }
                 }
