@@ -1,5 +1,6 @@
 package com.nemo.cineman
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,9 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.nemo.cineman.screens.WebViewScreen
 import com.nemo.cineman.screens.LoginScreen
 import com.nemo.cineman.screens.MenuScreen
 import com.nemo.cineman.ui.theme.CineManTheme
@@ -37,6 +41,19 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "menu") {
                             MenuScreen(navController = navController)
+                        }
+                        composable(
+                            route = "webview/{url}",
+                            arguments = listOf(
+                                navArgument("url") {
+                                    type = NavType.StringType  // Định nghĩa tham số là String
+                                }
+                            )
+                        ) { backStackEntry ->
+                            // Lấy tham số URL từ arguments
+                            val url = backStackEntry.arguments?.getString("url") ?: "https://www.google.com"  // Nếu URL rỗng hoặc null, dùng Google
+                            val decodedUrl = Uri.decode(url)
+                            WebViewScreen(url = decodedUrl)
                         }
                     }
                 }
