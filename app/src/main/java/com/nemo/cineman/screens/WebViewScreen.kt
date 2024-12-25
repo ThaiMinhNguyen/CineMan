@@ -3,6 +3,7 @@ package com.nemo.cineman.screens
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +41,8 @@ fun WebViewScreen(url: String?, navController: NavController) {
 
                 // Bật JavaScript
                 settings.javaScriptEnabled = true
+
+                settings.cacheMode = WebSettings.LOAD_DEFAULT
                 loadUrl(mUrl)
             }
         },

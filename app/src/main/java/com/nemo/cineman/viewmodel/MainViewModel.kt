@@ -23,59 +23,54 @@ class MainViewModel @Inject constructor(
     val popularMovies: LiveData<List<Movie>> get() = _popularMovies
 
 
-
 //    init {
 //        getMovies(1)
 //    }
 
     fun getNowPlayingMovies(page: Int) {
         viewModelScope.launch {
-            movieRepository.fetchNowPlayingMovie({ result ->
-                result.onSuccess { movies ->
-                    if (movies != null) {
+            val result = movieRepository.fetchNowPlayingMovie(page)
+            result.onSuccess { movies ->
+                if (movies != null) {
 
-                        _nowPlayingMovies.postValue(movies!!)
-                    } else {
-                        Log.d("MyLog", "No movie fetched")
-                    }
-                }.onFailure { exception ->
-                    Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
+                    _nowPlayingMovies.postValue(movies!!)
+                } else {
+                    Log.d("MyLog", "No movie fetched")
                 }
-            }, page)
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
+            }
             nowPlayingMovies.value?.let { movieRepository.insertLocalMovie(it) }
         }
     }
 
     fun getPopularMovies(page: Int) {
         viewModelScope.launch {
-            movieRepository.fetchPopularMovie({ result ->
-                result.onSuccess { movies ->
-                    if (movies != null) {
-                        _popularMovies.postValue(movies!!)
-                    } else {
-                        Log.d("MyLog", "No movie fetched")
-                    }
-                }.onFailure { exception ->
-                    Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
+            val result = movieRepository.fetchPopularMovie(page)
+            result.onSuccess { movies ->
+                if (movies != null) {
+                    _popularMovies.postValue(movies!!)
+                } else {
+                    Log.d("MyLog", "No movie fetched")
                 }
-            }, page)
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
+            }
         }
     }
 
 
+    fun getMovieCertification(id: Int) {
 
-    fun getMovieCertification(id: Int){
-        var movieCertification : MovieCertification? = null
-        viewModelScope.launch{
-            movieRepository.fetchMovieCertification({ result ->
-                result.onSuccess { movieCert ->
-                    movieCertification = movieCert!!
-                    Log.d("MyLog", "Fetch movie cert: ${movieCertification.toString()}")
-                }.onFailure { exception ->
-                    movieCertification = null
-                    Log.d("MyLog", "Failed to fetch movieCert: ${exception.message}")
-                }
-            },id)
+        viewModelScope.launch {
+            val result = movieRepository.fetchMovieCertification(id)
+            result.onSuccess { movieCert ->
+
+                Log.d("MyLog", "Fetch movie cert: ${movieCert.toString()}")
+            }.onFailure { exception ->
+
+                Log.d("MyLog", "Failed to fetch movieCert: ${exception.message}")
+            }
         }
 
     }

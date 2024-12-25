@@ -3,12 +3,8 @@ package com.nemo.cineman.api
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieDao
-import com.nemo.cineman.entity.MovieResponse
-import com.nemo.cineman.entity.VideoResponse
 import com.nemo.cineman.entity.VideoResult
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.awaitResponse
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
@@ -23,104 +19,78 @@ class MovieRepository @Inject constructor(
         movieDao.insertMovie(movies)
     }
 
-    suspend fun fetchNowPlayingMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
-        val call = movieService.getNowPlayingMovies("en-US", page)
-        call.enqueue(object: Callback<MovieResponse>{
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                if(response.isSuccessful){
-                    val movies = response.body()?.results
-                    callback(Result.success(movies))
-                } else {
-
-                    callback(Result.failure(Throwable("Error: ${response.errorBody()?.string()}")))
-                }
+    suspend fun fetchNowPlayingMovie(page: Int): Result<List<Movie>?> {
+        return try {
+            val response = movieService.getNowPlayingMovies("en-US", page).awaitResponse()
+            if (response.isSuccessful) {
+                val movies = response.body()?.results
+                Result.success(movies)
+            } else {
+                val error = Throwable("Error: ${response.errorBody()?.string()}")
+                Result.failure(error)
             }
-
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                callback(Result.failure(t))
-            }
-
-        })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    suspend fun fetchPopularMovie(callback: (Result<List<Movie>?>) -> Unit, page: Int) {
-        val call = movieService.getPopularMovies("en-US", page)
-        call.enqueue(object: Callback<MovieResponse>{
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                if(response.isSuccessful){
-                    val movies = response.body()?.results
-                    callback(Result.success(movies))
-                } else {
 
-                    callback(Result.failure(Throwable("Error: ${response.errorBody()?.string()}")))
-                }
+    suspend fun fetchPopularMovie(page: Int) : Result<List<Movie>?> {
+        val response = movieService.getPopularMovies("en-US", page).awaitResponse()
+        try{
+            if(response.isSuccessful){
+                val movies = response.body()?.results
+                return Result.success(movies)
+            } else {
+
+                return Result.failure(Throwable("Error: ${response.errorBody()?.string()}"))
             }
+        } catch (e: Exception){
+            return Result.failure(Throwable(e))
+        }
 
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                callback(Result.failure(t))
-            }
-
-        })
     }
 
-    suspend fun fetchMovieCertification(callback: (Result<MovieCertification?>) -> Unit, id: Int){
-        val call = movieService.getMovieCert(id)
-        call.enqueue(object: Callback<MovieCertification>{
-            override fun onResponse(
-                call: Call<MovieCertification>,
-                response: Response<MovieCertification>
-            ) {
-                if(response.isSuccessful){
-                    val movieCert = response.body()
-                    callback(Result.success(movieCert))
-                } else {
-                    callback(Result.failure(Throwable("Error: ${response.errorBody()?.string()}")))
-                }
+    suspend fun fetchMovieCertification(id: Int) : Result<MovieCertification?> {
+        val response = movieService.getMovieCert(id).awaitResponse()
+        try{
+            if(response.isSuccessful){
+                val movieCert = response.body()
+                return Result.success(movieCert)
+            } else {
+                return Result.failure(Throwable("Error: ${response.errorBody()?.string()}"))
             }
-
-            override fun onFailure(call: Call<MovieCertification>, t: Throwable) {
-                callback(Result.failure(t))
-            }
-
-        })
+        } catch (e: Exception){
+            return Result.failure(Throwable(e))
+        }
     }
 
-    suspend fun fetchSimmilarMovie(callback: (Result<List<Movie>?>) -> Unit, id: Int, page: Int){
-        val call = movieService.getSimilarMovie(id, page)
-        call.enqueue(object : Callback<MovieResponse>{
-            override fun onResponse(p0: Call<MovieResponse>, response: Response<MovieResponse>) {
-                if(response.isSuccessful){
-                    val movies = response.body()?.results
-                    callback(Result.success(movies))
-                }else{
-                    callback(Result.failure(Throwable("Error: $${response.errorBody()?.string()}")))
-                }
+    suspend fun fetchSimilarMovie(id: Int, page: Int) : Result<List<Movie>?>{
+        val response = movieService.getSimilarMovie(id, page).awaitResponse()
+        try{
+            if(response.isSuccessful){
+                val movies = response.body()?.results
+                return Result.success(movies)
+            } else {
+                return Result.failure(Throwable("Error: ${response.errorBody()?.string()}"))
             }
-
-            override fun onFailure(p0: Call<MovieResponse>, p1: Throwable) {
-                callback(Result.failure(p1))
-            }
-
-        })
+        } catch (e: Exception){
+            return Result.failure(Throwable(e))
+        }
     }
 
-    suspend fun fetchMovieTrailer(callback: (Result<List<VideoResult>?>) -> Unit, id: Int){
-        val call = movieService.getMovieTrailer(id)
-        call.enqueue(object: Callback<VideoResponse>{
-            override fun onResponse(call: Call<VideoResponse>, response: Response<VideoResponse>) {
-                if(response.isSuccessful){
-                    val videoResponse = response.body()?.results
-                    callback(Result.success(videoResponse))
-                } else {
-                    callback(Result.failure(Throwable("Error: $${response.errorBody()?.string()}")))
-                }
+    suspend fun fetchMovieTrailer(id: Int) : Result<List<VideoResult>?> {
+        val response = movieService.getMovieTrailer(id).awaitResponse()
+        try{
+            if(response.isSuccessful){
+                val videoResponse = response.body()?.results
+                return Result.success(videoResponse)
+            } else {
+                return Result.failure(Throwable("Error: ${response.errorBody()?.string()}"))
             }
-
-            override fun onFailure(call: Call<VideoResponse>, t: Throwable) {
-                callback(Result.failure(t))
-            }
-
-        })
+        } catch (e: Exception){
+            return Result.failure(Throwable(e))
+        }
     }
 
 }

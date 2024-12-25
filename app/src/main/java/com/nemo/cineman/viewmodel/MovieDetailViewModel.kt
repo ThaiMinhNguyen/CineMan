@@ -27,27 +27,25 @@ class MovieDetailViewModel  @Inject constructor(
 
     fun getSimilarMovie(id: Int, page: Int) {
         viewModelScope.launch {
-            movieRepository.fetchSimmilarMovie({result ->
-                result.onSuccess { movies ->
-                    _similarMovies.postValue(movies!!)
-                    Log.d("MyLog", "Fetch similar movie: ${movies}")
-                }.onFailure { exception ->
-                    Log.e("MyLog", "Failed to fetch similar movie: ${exception.message}")
-                }
-            },id, page)
+            val result = movieRepository.fetchSimilarMovie(id, page)
+            result.onSuccess { movies ->
+                _similarMovies.postValue(movies!!)
+                Log.d("MyLog", "Fetch similar movie: ${movies}")
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to fetch similar movie: ${exception.message}")
+            }
         }
     }
 
     fun getMovieTrailer(id: Int){
         viewModelScope.launch {
-            movieRepository.fetchMovieTrailer({ result ->
-                result.onSuccess { videos ->
-                    _videoResults.postValue(videos!!)
-                    Log.d("MyLog", "Fetch movie trailers: ${videos}")
-                }.onFailure { exception ->
-                    Log.e("MyLog", "Failed to fetch movie trailer: ${exception.message}")
-                }
-            },id)
+            val result = movieRepository.fetchMovieTrailer(id)
+            result.onSuccess { videos ->
+                _videoResults.postValue(videos!!)
+                Log.d("MyLog", "Fetch movie trailers: ${videos}")
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to fetch movie trailer: ${exception.message}")
+            }
         }
     }
 

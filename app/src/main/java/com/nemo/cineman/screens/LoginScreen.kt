@@ -91,6 +91,8 @@ fun LoginForm(
     val tokenValue by viewModel.requestToken.observeAsState(null)
     val scope = rememberCoroutineScope()
 
+
+
     if (isLoading) {
         Box(
             modifier = Modifier
@@ -139,16 +141,11 @@ fun LoginForm(
                     .padding(10.dp),
                 onClick = {
                     scope.launch {
-                        val result = viewModel.getRequestToken()
-                        result.onSuccess { token ->
-                            val url = "https://www.themoviedb.org/authenticate/$token"
-                            Log.d("MyLog", "Requested Token On Success: $token")
-                            Log.d("MyLog", "Requested Token when press button: " + viewModel.requestToken.value + "/" + tokenValue)
-                            Log.d("MyLog", url)
+                        val url = viewModel.getRequestToken()
+                        if (url != null){
+                            Log.d("MyLog", "Navigate now!!!")
                             val encodedUrl = Uri.encode(url)  // Mã hóa URL trước khi điều hướng
                             navController.navigate("webview/$encodedUrl")
-                        }.onFailure {
-                            Log.d("MyLog", "Failed to get token: ${viewModel.error.value}")
                         }
                     }
                 }

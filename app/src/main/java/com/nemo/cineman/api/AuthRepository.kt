@@ -5,30 +5,23 @@ import com.nemo.cineman.entity.RequestTokenResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.awaitResponse
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
     private val authService: AuthService
 ) {
-    fun getRequestToken(callback: (Result<RequestTokenResponse?>) -> Unit) {
-        val call = authService.getRequestToken()
-        call.enqueue(object : Callback<RequestTokenResponse>{
-            override fun onResponse(
-                call: Call<RequestTokenResponse>,
-                response: Response<RequestTokenResponse>
-            ) {
-                if (response.isSuccessful){
-                    val requestTokenResponse = response.body()
-                    callback(Result.success(requestTokenResponse))
-                } else {
-                    callback(Result.failure(Throwable("Error: ${response.errorBody()?.toString()}")))
-                }
+    suspend fun getRequestToken() : Result<RequestTokenResponse?> {
+        val response = authService.getRequestToken().awaitResponse()
+        return try {
+            if(response.isSuccessful){
+                Result.success(response.body())
+            } else{
+                val error = response.errorBody()?.toString()
+                Result.failure(Throwable(error))
             }
-
-            override fun onFailure(call: Call<RequestTokenResponse>, t: Throwable) {
-                callback(Result.failure(t))
-            }
-
-        })
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 }
