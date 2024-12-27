@@ -7,3 +7,8 @@ data class RequestTokenResponse(
     @SerializedName("expires_at") val expiresAt: String,
     @SerializedName("request_token") val requestToken: String
 )
+
+data class RequestTokenBody(
+    @SerializedName("request_token") val requestToken: String
+)
+

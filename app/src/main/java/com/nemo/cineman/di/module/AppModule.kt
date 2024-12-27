@@ -1,6 +1,7 @@
 package com.nemo.cineman.di.module
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.nemo.cineman.api.AuthService
 import com.nemo.cineman.api.MovieService
@@ -13,6 +14,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -59,4 +61,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMovieDao(appDb: AppDatabase) = appDb.movieDao()
+
+    @Provides
+    @Named("session_pref")
+    @Singleton
+    fun provideSessionPreferences(@ApplicationContext context: Context) : SharedPreferences {
+        return context.getSharedPreferences("session_prefs", Context.MODE_PRIVATE)
+    }
 }
