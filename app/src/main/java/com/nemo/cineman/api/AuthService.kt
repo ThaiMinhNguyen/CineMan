@@ -1,10 +1,14 @@
 package com.nemo.cineman.api
 
 import com.nemo.cineman.entity.MovieResponse
+import com.nemo.cineman.entity.RequestTokenBody
 import com.nemo.cineman.entity.RequestTokenResponse
+import com.nemo.cineman.entity.SessionResponse
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface AuthService {
@@ -16,5 +20,9 @@ interface AuthService {
     fun getRequestToken(
     ): Call<RequestTokenResponse>
 
-
+    @Headers(
+        "accept: application/json"
+    )
+    @POST("authentication/session/new")
+    suspend fun getNewSession(@Body requestTokenBody: RequestTokenBody) : SessionResponse
 }
