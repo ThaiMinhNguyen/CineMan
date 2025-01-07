@@ -1,7 +1,9 @@
 package com.nemo.cineman.api
 
 import com.nemo.cineman.entity.Movie
+import com.nemo.cineman.entity.RequestTokenBody
 import com.nemo.cineman.entity.RequestTokenResponse
+import com.nemo.cineman.entity.SessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,6 +22,16 @@ class AuthRepository @Inject constructor(
                 val error = response.errorBody()?.toString()
                 Result.failure(Throwable(error))
             }
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
+
+    suspend fun getNewSession(requestToken : String) : Result<SessionResponse?> {
+        return try {
+            val requestTokenBody : RequestTokenBody = RequestTokenBody(requestToken)
+            val response = authService.getNewSession(requestTokenBody)
+            Result.success(response)
         } catch (e: Exception) {
             return Result.failure(e)
         }
