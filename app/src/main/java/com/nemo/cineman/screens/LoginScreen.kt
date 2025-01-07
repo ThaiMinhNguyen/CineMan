@@ -17,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -90,8 +92,15 @@ fun LoginForm(
     val isLoading by viewModel.isLoading.observeAsState(false)
     val tokenValue by viewModel.requestToken.observeAsState(null)
     val scope = rememberCoroutineScope()
+    val navigationEvent by viewModel.navigationEvent.collectAsState()
 
-
+    if (navigationEvent != null) {
+        val encodedUrl = Uri.encode(navigationEvent) // Encode URL trước khi điều hướng
+        LaunchedEffect(navigationEvent) {
+            navController.navigate("webview/$encodedUrl")
+            viewModel.onNavigationHandled() // Xóa trạng thái điều hướng sau khi xử lý
+        }
+    }
 
     if (isLoading) {
         Box(
@@ -142,11 +151,11 @@ fun LoginForm(
                 onClick = {
                     scope.launch {
                         val url = viewModel.getRequestToken()
-                        if (url != null){
-                            Log.d("MyLog", "Navigate now!!!")
-                            val encodedUrl = Uri.encode(url)  // Mã hóa URL trước khi điều hướng
-                            navController.navigate("webview/$encodedUrl")
-                        }
+//                        if (url != null){
+//                            Log.d("MyLog", "Navigate now!!!")
+//                            val encodedUrl = Uri.encode(url)  // Mã hóa URL trước khi điều hướng
+//                            navController.navigate("webview/$encodedUrl")
+//                        }
                     }
                 }
             ) {
