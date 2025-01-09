@@ -1,5 +1,6 @@
 package com.nemo.cineman.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemo.cineman.api.AuthRepository
 import com.nemo.cineman.entity.SharedPreferenceManager
+import com.nemo.cineman.entity.UsernamePasswordBody
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,13 +25,49 @@ class AuthViewModel @Inject constructor(
     val isLoading: LiveData<Boolean> get() = _isLoading
     private var _requestToken = MutableLiveData<String>().apply { value = null }
     val requestToken: LiveData<String> get() = _requestToken
-    private var _error = MutableLiveData<String>()
-    val error: LiveData<String> get() = _error
+    private var _error = MutableLiveData<String?>(null)
+    val error: LiveData<String?> get() = _error
     private val _navigationEvent = MutableStateFlow<String?>(null)
     val navigationEvent: StateFlow<String?> = _navigationEvent
 
+    fun onErrorHandled(){
+        _error.value = null
+    }
 
-    suspend fun getRequestToken() : String? {
+    suspend fun signInWithLogin(userName : String, password : String) : Boolean {
+        _isLoading.value = true
+        Log.d("MyLog", "isLoading value: ${_isLoading.value}")
+        return try {
+            val result = authRepository.getRequestToken()
+            result.getOrNull()?.requestToken?.let { token ->
+                _requestToken.value = token
+                Log.d("MyLog", "Get Request Token Successfully")
+                Log.d("MyLog", "Token: $token")
+                Log.d("MyLog", "Requested Token On Success: $token")
+                Log.d("MyLog", "Requested Token when press button: " + "${requestToken.value}/$token")
+                sharedPreferenceManager.saveToken(token)
+
+                val res = authRepository.getNewSessionWithLogin(userName, password, token)
+                if(res.getOrNull()?.success == true){
+                    _navigationEvent.value = "menu"
+                    return true
+                }
+                _error.postValue("Cannot login. Please check your username and password")
+                return false
+            } ?: run {
+                _error.postValue("Request token is null")
+                Log.d("MyLog", "Request token is null")
+                return false
+            }
+        } catch (e: Exception) {
+            _error.postValue("Get Request Token Failed: ${e.message}")
+            false
+        } finally {
+            _isLoading.value = false
+        }
+    }
+
+    suspend fun signInWithTMDB() : String? {
         _isLoading.value = true
         Log.d("MyLog", "isLoading value: ${_isLoading.value}")
         return try {
@@ -42,7 +80,8 @@ class AuthViewModel @Inject constructor(
                 Log.d("MyLog", "Requested Token On Success: $token")
                 Log.d("MyLog", "Requested Token when press button: " + "${requestToken.value}/$token")
                 Log.d("MyLog", url)
-                _navigationEvent.value = url
+                val encodedUrl = Uri.encode(url) // Encode URL trước khi điều hướng
+                _navigationEvent.value = "webview/$encodedUrl"
                 sharedPreferenceManager.saveToken(token)
                 return url
             } ?: run {
@@ -57,8 +96,6 @@ class AuthViewModel @Inject constructor(
             _isLoading.value = false
         }
     }
-
-
 
     fun onNavigationHandled() {
         _navigationEvent.value = null

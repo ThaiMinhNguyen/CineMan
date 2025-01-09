@@ -4,6 +4,7 @@ import com.nemo.cineman.entity.MovieResponse
 import com.nemo.cineman.entity.RequestTokenBody
 import com.nemo.cineman.entity.RequestTokenResponse
 import com.nemo.cineman.entity.SessionResponse
+import com.nemo.cineman.entity.UsernamePasswordBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,4 +26,11 @@ interface AuthService {
     )
     @POST("authentication/session/new")
     suspend fun getNewSession(@Body requestTokenBody: RequestTokenBody) : SessionResponse
+
+    @Headers(
+        "accept: application/json"
+    )
+    @POST("authentication/token/validate_with_login")
+    suspend fun getNewSessionWithLogin(@Body requestTokenBody: UsernamePasswordBody) : SessionResponse
+
 }

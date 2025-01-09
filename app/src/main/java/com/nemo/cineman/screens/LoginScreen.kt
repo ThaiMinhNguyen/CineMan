@@ -2,6 +2,7 @@ package com.nemo.cineman.screens
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
@@ -27,6 +30,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -89,16 +94,33 @@ fun LoginForm(
     var passwordText by remember {
         mutableStateOf("")
     }
+
+    val inputValid by remember {
+        mutableStateOf(false)
+    }
+
     val isLoading by viewModel.isLoading.observeAsState(false)
     val tokenValue by viewModel.requestToken.observeAsState(null)
     val scope = rememberCoroutineScope()
     val navigationEvent by viewModel.navigationEvent.collectAsState()
+    val error by viewModel.error.observeAsState()
+    val context = LocalContext.current
+    val onDismiss = {
+        viewModel.onErrorHandled()
+    }
+
+    val onConfirm = {
+        viewModel.onErrorHandled()
+
+    }
+    val icon = Icons.Default.Info // Example icon
+
+
 
     if (navigationEvent != null) {
-        val encodedUrl = Uri.encode(navigationEvent) // Encode URL trước khi điều hướng
         LaunchedEffect(navigationEvent) {
-            navController.navigate("webview/$encodedUrl")
-            viewModel.onNavigationHandled() // Xóa trạng thái điều hướng sau khi xử lý
+            navController.navigate(navigationEvent!!)
+            viewModel.onNavigationHandled()
         }
     }
 
@@ -136,8 +158,14 @@ fun LoginForm(
                     .align(Alignment.CenterHorizontally)
                     .padding(10.dp),
                 onClick = {
-                    Log.d("MyLog", "Login pressed")
-                    navController.navigate("menu")
+                    if (passwordText.isEmpty() || userText.isEmpty()){
+                        Toast.makeText(context, "Username or password cannot be empty", Toast.LENGTH_SHORT).show()
+                    } else {
+                        scope.launch {
+                            Log.d("MyLog", "Login pressed")
+                            viewModel.signInWithLogin(userText, passwordText)
+                        }
+                    }
                 }
             ) {
                 Text(
@@ -150,12 +178,7 @@ fun LoginForm(
                     .padding(10.dp),
                 onClick = {
                     scope.launch {
-                        val url = viewModel.getRequestToken()
-//                        if (url != null){
-//                            Log.d("MyLog", "Navigate now!!!")
-//                            val encodedUrl = Uri.encode(url)  // Mã hóa URL trước khi điều hướng
-//                            navController.navigate("webview/$encodedUrl")
-//                        }
+                        viewModel.signInWithTMDB()
                     }
                 }
             ) {
@@ -170,7 +193,16 @@ fun LoginForm(
                     textAlign = TextAlign.Center
                 )
             }
+            if (error != null) {
+                AlertDialogExample(
+                    onDismissRequest = onDismiss,
+                    onConfirmation = onConfirm,
+                    dialogTitle = "Session Expired",
+                    dialogText = error!!,
+                    icon = icon
+                )
 
+            }
         }
 
     }

@@ -17,5 +17,12 @@ data class SessionResponse(
     @SerializedName("session_id") val sessionId: String? = null,
     @SerializedName("failure") val failure: Boolean? = null,
     @SerializedName("status_code") val statusCode: Int? = null,
-    @SerializedName("status_message") val statusMessage: String? = null
+    @SerializedName("status_message") val statusMessage: String? = null,
+    @SerializedName("error") val error: String? = null
+)
+
+data class UsernamePasswordBody(
+    @SerializedName("username") val userName: String,
+    @SerializedName("password") val password: String,
+    @SerializedName("request_token") val requestToken: String,
 )
