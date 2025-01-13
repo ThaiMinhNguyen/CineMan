@@ -29,16 +29,14 @@ object AppModule {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val original = chain.request()
-                val originalHttpUrl = original.url()
+                val originalHttpUrl = original.url
                 val url = originalHttpUrl.newBuilder()
                     .addQueryParameter("api_key", APIKEY)
                     .build()
                 val requestBuilder = original.newBuilder().url(url)
                 val request = requestBuilder.build()
                 chain.proceed(request)
-            }
-
-             .build()
+            }.build()
     }
 
 
