@@ -27,8 +27,8 @@ class SharedPreferenceManager @Inject constructor(
 
     // Lưu session và thời gian hết hạn
     fun saveSession(sessionId: String) {
-//        val expiredTime = System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)
-        val expiredTime = System.currentTimeMillis() + (1000)
+        val expiredTime = System.currentTimeMillis() + (10 * 24 * 60 * 60 * 1000)
+//        val expiredTime = System.currentTimeMillis() + (1000)
 
         prefs.edit().apply {
             putString(KEY_SESSION_ID, sessionId)
