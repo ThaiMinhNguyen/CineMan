@@ -2,6 +2,7 @@ package com.nemo.cineman
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +17,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.nemo.cineman.entity.ListType
+import com.nemo.cineman.screens.ListMovieScreen
 import com.nemo.cineman.screens.WebViewScreen
 import com.nemo.cineman.screens.LoginScreen
 import com.nemo.cineman.screens.MenuScreen
@@ -54,6 +57,24 @@ class MainActivity : ComponentActivity() {
                             val url = backStackEntry.arguments?.getString("url") ?: "https://www.google.com"  // Nếu URL rỗng hoặc null, dùng Google
                             val decodedUrl = Uri.decode(url)
                             WebViewScreen(url = decodedUrl, navController)
+                        }
+                        composable(
+                            route = "listMovie/{type}",
+                            arguments = listOf(
+                                navArgument("type"){
+                                    type = NavType.StringType
+                                }
+                            )
+                        ) { backStackEntry ->
+                            val listTypeString = backStackEntry.arguments?.getString("type")
+                            Log.d("MyLog", "Received type: $listTypeString")
+                            val listType = runCatching {
+                                ListType.valueOf(listTypeString ?: ListType.NowPlaying.name)
+                            }.getOrElse {
+                                Log.e("MyLog", "Invalid ListType: $listTypeString. Defaulting to NowPlaying.", it)
+                                ListType.NowPlaying
+                            }
+                            ListMovieScreen(navController, type = listType)
                         }
                     }
                 }
