@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.Database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
@@ -28,8 +29,15 @@ data class Movie(
     val vote_count: Int
 ) : Parcelable
 
+enum class ListType {
+    NowPlaying,
+    Popular,
+    TopRated,
+    UpComing
+}
 
 data class MovieResponse(
+    @SerializedName("page") val page : Int,
     val results: List<Movie>
 )
 
