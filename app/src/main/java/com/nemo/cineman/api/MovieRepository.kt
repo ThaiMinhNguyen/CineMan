@@ -1,9 +1,18 @@
 package com.nemo.cineman.api
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieDao
+import com.nemo.cineman.entity.MoviePagingSource
 import com.nemo.cineman.entity.VideoResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 import javax.inject.Inject
 
@@ -15,20 +24,16 @@ class MovieRepository @Inject constructor(
        return movieDao.getAllMovie()
     }
 
-    fun insertLocalMovie(movies: List<Movie>) {
-        movieDao.insertMovie(movies)
+    suspend fun insertLocalMovie(movies: List<Movie>) {
+        withContext(Dispatchers.IO){
+            movieDao.insertMovie(movies)
+        }
     }
 
     suspend fun fetchNowPlayingMovie(page: Int): Result<List<Movie>?> {
         return try {
-            val response = movieService.getNowPlayingMovies("en-US", page).awaitResponse()
-            if (response.isSuccessful) {
-                val movies = response.body()?.results
-                Result.success(movies)
-            } else {
-                val error = Throwable("Error: ${response.errorBody()?.string()}")
-                Result.failure(error)
-            }
+            val response = movieService.getNowPlayingMovies(language = "en-US", page = page)
+            Result.success(response.results)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -36,19 +41,40 @@ class MovieRepository @Inject constructor(
 
 
     suspend fun fetchPopularMovie(page: Int) : Result<List<Movie>?> {
-        val response = movieService.getPopularMovies("en-US", page).awaitResponse()
-        try{
-            if(response.isSuccessful){
-                val movies = response.body()?.results
-                return Result.success(movies)
-            } else {
-
-                return Result.failure(Throwable("Error: ${response.errorBody()?.string()}"))
-            }
-        } catch (e: Exception){
-            return Result.failure(Throwable(e))
+        return try {
+            val response = movieService.getPopularMovies(language = "en-US", page = page)
+            Result.success(response.results)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
+    suspend fun fetchTopRatedMovie(page: Int): Result<List<Movie>?> {
+        return try {
+            val response = movieService.getTopRatedMovies(language = "en-US", page = page)
+            Result.success(response.results)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun fetchUpComingMovie(page: Int): Result<List<Movie>?> {
+        return try {
+            val response = movieService.getUpComingMovies(language = "en-US", page = page)
+            Result.success(response.results)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    fun getMoviesByType(type: ListType): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { MoviePagingSource(movieService, type) }
+        ).flow
     }
 
     suspend fun fetchMovieCertification(id: Int) : Result<MovieCertification?> {
