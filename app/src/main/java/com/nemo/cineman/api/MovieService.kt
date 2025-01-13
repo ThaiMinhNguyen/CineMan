@@ -18,40 +18,40 @@ interface MovieService {
         "accept: application/json"
     )
     @GET("movie/now_playing")
-    fun getNowPlayingMovies(
-        @Query("language") language: String,
-        @Query("page") page: Int
-    ): Call<MovieResponse>
+    suspend fun getNowPlayingMovies(
+        @Query("language") language: String? = "en-US",
+        @Query("page") page: Int? = 1
+    ): MovieResponse
 
 
     @Headers(
         "accept: application/json"
     )
     @GET("movie/popular")
-    fun getPopularMovies(
-        @Query("language") language: String,
-        @Query("page") page: Int
-    ): Call<MovieResponse>
+    suspend fun getPopularMovies(
+        @Query("language") language: String? = "en-US",
+        @Query("page") page: Int? = 1
+    ): MovieResponse
 
 
     @Headers(
         "accept: application/json"
     )
     @GET("movie/top_rated")
-    fun getTopRatedMovies(
-        @Query("language") language: String,
-        @Query("page") page: Int
-    ): Call<MovieResponse>
+    suspend fun getTopRatedMovies(
+        @Query("language") language:  String? = "en-US",
+        @Query("page") page: Int? = 1
+    ): MovieResponse
 
 
     @Headers(
         "accept: application/json"
     )
     @GET("movie/upcoming")
-    fun getUpComingMovies(
-        @Query("language") language: String,
-        @Query("page") page: Int
-    ): Call<MovieResponse>
+    suspend fun getUpComingMovies(
+        @Query("language") language: String? = "en-US",
+        @Query("page") page: Int? = 1
+    ): MovieResponse
 
     //=========================================
 
