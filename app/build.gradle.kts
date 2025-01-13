@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.paging.common.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -97,4 +98,10 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.1.0")
     androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.4.0")
+    implementation("com.github.bumptech.glide:glide:4.13.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    val paging_version = "3.3.5"
+    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-compose:3.3.5")
+
 }
