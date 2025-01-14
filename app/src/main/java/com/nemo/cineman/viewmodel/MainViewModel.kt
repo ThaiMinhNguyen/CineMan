@@ -55,48 +55,60 @@ class MainViewModel @Inject constructor(
     }
 
     suspend fun checkSession(){
-        val sessionId = sharedPreferenceManager.getSessionId()
-        if(sessionId == null){
-            val token = sharedPreferenceManager.getRequestToken()
-            if (token != null){
-                Log.d("MyLog", "checkSession: got request token: $token")
-                var attempts = 0
-                val maxRetries = 3
-                var result: Result<SessionResponse?>? = null
-                while (attempts < maxRetries && (result == null || result.isFailure == true)) {
-                    result = authRepository.getNewSession(token)
-                    attempts++
-                    if (result.isFailure) {
-                        delay(1000 * attempts.toLong())
+        val guestSessionId = sharedPreferenceManager.getGuestSessionId()
+        if (guestSessionId == null) {
+            val sessionId = sharedPreferenceManager.getSessionId()
+            if (sessionId == null) {
+                val token = sharedPreferenceManager.getRequestToken()
+                if (token != null) {
+                    Log.d("MyLog", "checkSession: got request token: $token")
+                    var attempts = 0
+                    val maxRetries = 3
+                    var result: Result<SessionResponse?>? = null
+                    while (attempts < maxRetries && (result == null || result.isFailure == true)) {
+                        result = authRepository.getNewSession(token)
+                        attempts++
+                        if (result.isFailure) {
+                            delay(1000 * attempts.toLong())
+                        }
                     }
+                    if (result?.isSuccess == true) {
+                        getNowPlayingMovies(1)
+                        getPopularMovies()
+                        val newSession = result.getOrNull()
+                        newSession?.let {
+                            it.sessionId?.let { it1 -> sharedPreferenceManager.saveSession(it1) }
+                            Log.d("MyLog", "checkSession: New session created: ${it.sessionId}")
+                        }
+                    } else {
+                        val exception = result?.exceptionOrNull()
+                        exception?.let {
+                            Log.e("MyLog", "checkSession: Error creating session: ${it.message}")
+                            //thông báo lỗi cho người dùng
+                            _notificationEvent.value = "Không thể tạo session."
+                        }
+                    }
+
                 }
-                if (result?.isSuccess == true) {
+
+            } else {
+                if (sharedPreferenceManager.isSessionExpired()) {
+                    _notificationEvent.value = "Session hết hạn. Vui lòng đăng nhập lại."
+                    Log.e("MyLog", "checkSession: Session expired")
+                } else {
                     getNowPlayingMovies(1)
                     getPopularMovies()
-                    val newSession = result.getOrNull()
-                    newSession?.let {
-                        it.sessionId?.let { it1 -> sharedPreferenceManager.saveSession(it1) }
-                        Log.d("MyLog", "checkSession: New session created: ${it.sessionId}")
-                    }
-                } else {
-                    val exception = result?.exceptionOrNull()
-                    exception?.let {
-                        Log.e("MyLog", "checkSession: Error creating session: ${it.message}")
-                        //thông báo lỗi cho người dùng
-                        _notificationEvent.value = "Không thể tạo session."
-                    }
+                    Log.e("MyLog", "checkSession: Session still valid: $sessionId")
                 }
-
             }
-
         } else {
-            if(sharedPreferenceManager.isSessionExpired()){
+            if (sharedPreferenceManager.isSessionExpired()) {
                 _notificationEvent.value = "Session hết hạn. Vui lòng đăng nhập lại."
                 Log.e("MyLog", "checkSession: Session expired")
             } else {
-                getNowPlayingMovies(1)
+                getNowPlayingMovies()
                 getPopularMovies()
-                Log.e("MyLog", "checkSession: Session still valid: $sessionId")
+                Log.e("MyLog", "checkSession: Session still valid: $guestSessionId")
             }
         }
     }

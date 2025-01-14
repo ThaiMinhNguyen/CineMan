@@ -26,3 +26,9 @@ data class UsernamePasswordBody(
     @SerializedName("password") val password: String,
     @SerializedName("request_token") val requestToken: String,
 )
+
+data class GuestSessionResponse(
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("guest_session_id") val guestSessionId : String,
+    @SerializedName("expires_at") val expiresAt : String,
+)

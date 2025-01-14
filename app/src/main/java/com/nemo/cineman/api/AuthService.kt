@@ -1,5 +1,6 @@
 package com.nemo.cineman.api
 
+import com.nemo.cineman.entity.GuestSessionResponse
 import com.nemo.cineman.entity.MovieResponse
 import com.nemo.cineman.entity.RequestTokenBody
 import com.nemo.cineman.entity.RequestTokenResponse
@@ -20,6 +21,13 @@ interface AuthService {
     @GET("authentication/token/new")
     fun getRequestToken(
     ): Call<RequestTokenResponse>
+
+    @Headers(
+        "accept: application/json"
+    )
+    @GET("authentication/guest_session/new")
+    suspend fun getGuestSession(
+    ) : GuestSessionResponse
 
     @Headers(
         "accept: application/json"

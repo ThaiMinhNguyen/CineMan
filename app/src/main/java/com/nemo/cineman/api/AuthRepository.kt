@@ -1,5 +1,6 @@
 package com.nemo.cineman.api
 
+import com.nemo.cineman.entity.GuestSessionResponse
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.RequestTokenBody
 import com.nemo.cineman.entity.RequestTokenResponse
@@ -44,6 +45,15 @@ class AuthRepository @Inject constructor(
             val response = authService.getNewSessionWithLogin(usernamePasswordBody)
             Result.success(response)
         } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
+
+    suspend fun getNewGuestSession() : Result<GuestSessionResponse>{
+        return try {
+            val response = authService.getGuestSession()
+            Result.success(response)
+        } catch (e:Exception){
             return Result.failure(e)
         }
     }

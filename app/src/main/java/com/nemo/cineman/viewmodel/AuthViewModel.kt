@@ -34,6 +34,27 @@ class AuthViewModel @Inject constructor(
         _error.value = null
     }
 
+    suspend fun signInWithGuest(){
+        _isLoading.value = true
+        try {
+            val result = authRepository.getNewGuestSession()
+            result.getOrNull()?.let { result ->
+                sharedPreferenceManager.saveGuestSession(result.guestSessionId, result.expiresAt)
+                Log.d("MyLog", "Get Guest Session Successfully")
+                Log.d("MyLog", "Guest Session: ${result.guestSessionId}")
+                _navigationEvent.value = "menu"
+            }?: run {
+                _error.postValue("Login with guest Failed: session null")
+                Log.d("MyLog", "Login with guest Failed: session null")
+            }
+        } catch (e: Exception){
+            _error.postValue("Login with guest Failed: ${e.message}")
+            Log.d("MyLog", "Login with guest Failed: ${e.message}")
+        } finally {
+            _isLoading.value = false
+        }
+    }
+
     suspend fun signInWithLogin(userName : String, password : String) : Boolean {
         _isLoading.value = true
         Log.d("MyLog", "isLoading value: ${_isLoading.value}")
