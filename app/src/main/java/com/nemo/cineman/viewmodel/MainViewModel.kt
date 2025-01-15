@@ -108,7 +108,7 @@ class MainViewModel @Inject constructor(
             } else {
                 getNowPlayingMovies()
                 getPopularMovies()
-                Log.e("MyLog", "checkSession: Session still valid: $guestSessionId")
+                Log.e("MyLog", "checkSession: Guest Session still valid: $guestSessionId")
             }
         }
     }
