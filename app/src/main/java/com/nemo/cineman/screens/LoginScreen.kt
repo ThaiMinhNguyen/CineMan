@@ -193,6 +193,18 @@ fun LoginForm(
                     textAlign = TextAlign.Center
                 )
             }
+            Button(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(10.dp),
+                onClick = {
+                    scope.launch {
+                        viewModel.signInWithGuest()
+                    }
+                }
+            ) {
+                Text(text = "Sign in with Guest")
+            }
             if (error != null) {
                 AlertDialogExample(
                     onDismissRequest = onDismiss,
@@ -201,7 +213,6 @@ fun LoginForm(
                     dialogText = error!!,
                     icon = icon
                 )
-
             }
         }
 
