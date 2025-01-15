@@ -1,9 +1,6 @@
 package com.nemo.cineman.screens
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -17,7 +14,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -108,7 +104,11 @@ fun MenuScreen(
         bottomBar = {
             BottomAppBar {
                 IconButton(
-                    onClick = { /* Handle Home action */ },
+                    onClick = {
+                        navController.navigate("menu"){
+                            launchSingleTop = true
+                        }
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
@@ -134,7 +134,6 @@ fun MenuScreen(
             }
         },
         content = { paddingValues ->
-            // Nội dung chính của màn hình, có padding để tránh bị che khuất bởi BottomAppBar
             Column(
                 modifier = Modifier
                     .fillMaxSize()
