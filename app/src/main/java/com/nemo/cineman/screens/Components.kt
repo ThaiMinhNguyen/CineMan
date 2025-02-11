@@ -19,12 +19,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -288,4 +294,42 @@ fun TitleType(type: String, navController: NavController    ){
 @Composable
 fun TitleTypePreview(){
     TitleType(type = "Now Playing", rememberNavController())
+}
+
+@Composable
+fun DefaultBottomBar(navController: NavController){
+    BottomAppBar(contentColor = Color.White, containerColor = Color.Black) {
+        IconButton(
+            onClick = {
+                navController.navigate("menu") {
+                    launchSingleTop = true
+                }
+            },
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
+        }
+        IconButton(
+            onClick = {
+                navController.navigate("searchMovie") {
+                    launchSingleTop = true
+                }
+            },
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(imageVector = Icons.Default.Search, contentDescription = "Home")
+        }
+        IconButton(
+            onClick = { /* Handle Home action */ },
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(imageVector = Icons.Default.Person, contentDescription = "Home")
+        }
+        IconButton(
+            onClick = { /* Handle Home action */ },
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+        }
+    }
 }

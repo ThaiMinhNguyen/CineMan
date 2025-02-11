@@ -23,6 +23,7 @@ import com.nemo.cineman.screens.ListMovieScreen
 import com.nemo.cineman.screens.WebViewScreen
 import com.nemo.cineman.screens.LoginScreen
 import com.nemo.cineman.screens.MenuScreen
+import com.nemo.cineman.screens.SearchScreen
 import com.nemo.cineman.ui.theme.CineManTheme
 import com.nemo.cineman.ui.theme.playwrite
 import dagger.hilt.android.AndroidEntryPoint
@@ -88,6 +89,11 @@ class MainActivity : ComponentActivity() {
                             val movieId = backStackEntry.arguments?.getInt("movieId")
                             Log.d("MyLog", "Received movieId: $movieId")
                             DetailMovieScreen(movieId!!, navController)
+                        }
+                        composable(
+                            route = "searchMovie",
+                        ) {
+                            SearchScreen(navController = navController)
                         }
                     }
                 }

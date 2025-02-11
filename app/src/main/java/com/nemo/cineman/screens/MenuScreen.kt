@@ -57,8 +57,8 @@ fun MenuScreen(
 
     val logOut = {
         viewModel.onLogOutHandled()
-        navController.navigate("login"){
-            popUpTo(navController.graph.startDestinationRoute!!){inclusive = true}
+        navController.navigate("login") {
+            popUpTo(navController.graph.startDestinationRoute!!) { inclusive = true }
             launchSingleTop = true
         }
     }
@@ -66,8 +66,8 @@ fun MenuScreen(
     val onConfirm = {
         viewModel.onNotificationHandled()
         viewModel.onLogOutHandled()
-        navController.navigate("login"){
-            popUpTo(navController.graph.startDestinationRoute!!){inclusive = true}
+        navController.navigate("login") {
+            popUpTo(navController.graph.startDestinationRoute!!) { inclusive = true }
             launchSingleTop = true
         }
     }
@@ -77,8 +77,8 @@ fun MenuScreen(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.Black,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
                 title = {
                     Text(text = "Menu")
@@ -102,36 +102,7 @@ fun MenuScreen(
             )
         },
         bottomBar = {
-            BottomAppBar {
-                IconButton(
-                    onClick = {
-                        navController.navigate("menu"){
-                            launchSingleTop = true
-                        }
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-                }
-                IconButton(
-                    onClick = { /* Handle Home action */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "Home")
-                }
-                IconButton(
-                    onClick = { /* Handle Home action */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = "Home")
-                }
-                IconButton(
-                    onClick = { /* Handle Home action */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
-                }
-            }
+            DefaultBottomBar(navController)
         },
         content = { paddingValues ->
             Column(

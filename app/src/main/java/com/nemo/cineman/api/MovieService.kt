@@ -53,6 +53,17 @@ interface MovieService {
         @Query("page") page: Int? = 1
     ): MovieResponse
 
+
+    @Headers(
+        "accept: application/json"
+    )
+    @GET("search/movie")
+    suspend fun searchMoviesByTitle(
+        @Query("query") query: String,
+        @Query("language") language: String? = "en-US",
+        @Query("page") page: Int? = 1
+    ): MovieResponse
+
     //=========================================
 
     //==============Movie Detail===============

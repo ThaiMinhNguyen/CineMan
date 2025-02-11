@@ -9,6 +9,7 @@ import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieDao
 import com.nemo.cineman.entity.MoviePagingSource
+import com.nemo.cineman.entity.SearchMoviePagingSource
 import com.nemo.cineman.entity.VideoResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -74,6 +75,16 @@ class MovieRepository @Inject constructor(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = { MoviePagingSource(movieService, type) }
+        ).flow
+    }
+
+    fun searchMoviesByTitle(name: String): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { SearchMoviePagingSource(movieService, name) }
         ).flow
     }
 
