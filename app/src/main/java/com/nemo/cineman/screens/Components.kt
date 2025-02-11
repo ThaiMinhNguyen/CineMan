@@ -2,6 +2,7 @@ package com.nemo.cineman.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -109,12 +110,17 @@ fun PreviewAlertDialogExample() {
 }
 
 @Composable
-fun MovieCard(movie: Movie) {
+fun MovieCard(movie: Movie, navController: NavController) {
     Card(
+//        onClick = rememberNavController().navigate(DetailMovieScreen()),
         modifier = Modifier
             .width(380.dp)
             .height(150.dp)
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+//            .clickable { navController.navigate("menu") },
+            .clickable { navController.navigate("detailMovie/${movie.id}"){
+
+            } },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = MaterialTheme.shapes.medium
     ) {
@@ -178,7 +184,7 @@ fun MovieCard(movie: Movie) {
 }
 
 @Composable
-fun MovieGrid(movies: List<Movie>) {
+fun MovieGrid(movies: List<Movie>, navController: NavController) {
 
     val pagerState = rememberPagerState(pageCount = { (movies.size + 1) / 2 })
 
@@ -195,19 +201,19 @@ fun MovieGrid(movies: List<Movie>) {
         Column {
 
             if (movieIndex1 < movies.size) {
-                MovieCard(movie = movies[movieIndex1])
+                MovieCard(movie = movies[movieIndex1], navController)
             }
 
 
             if (movieIndex2 < movies.size) {
-                MovieCard(movie = movies[movieIndex2])
+                MovieCard(movie = movies[movieIndex2], navController)
             }
         }
     }
 }
 
 @Composable
-fun MovieColumn(movies: LazyPagingItems<Movie>){
+fun MovieColumn(movies: LazyPagingItems<Movie>, navController: NavController){
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -215,7 +221,7 @@ fun MovieColumn(movies: LazyPagingItems<Movie>){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(movies.itemCount) { index ->
-            movies[index]?.let { MovieCard(movie = it) } // Hiển thị mỗi MovieCard
+            movies[index]?.let { MovieCard(movie = it, navController) } // Hiển thị mỗi MovieCard
         }
         movies.apply {
             when {

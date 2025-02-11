@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nemo.cineman.entity.ListType
+import com.nemo.cineman.screens.DetailMovieScreen
 import com.nemo.cineman.screens.ListMovieScreen
 import com.nemo.cineman.screens.WebViewScreen
 import com.nemo.cineman.screens.LoginScreen
@@ -75,6 +76,18 @@ class MainActivity : ComponentActivity() {
                                 ListType.NowPlaying
                             }
                             ListMovieScreen(navController, type = listType)
+                        }
+                        composable(
+                            route = "detailMovie/{movieId}",
+                            arguments = listOf(
+                                navArgument("movieId"){
+                                    type = NavType.IntType
+                                }
+                            )
+                        ) { backStackEntry ->
+                            val movieId = backStackEntry.arguments?.getInt("movieId")
+                            Log.d("MyLog", "Received movieId: $movieId")
+                            DetailMovieScreen(movieId!!, navController)
                         }
                     }
                 }

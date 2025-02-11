@@ -141,13 +141,13 @@ fun MenuScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 TitleType(ListType.NowPlaying.name, navController)
-                MovieGrid(movies = nowPlayingMovies ?: emptyList())
+                MovieGrid(movies = nowPlayingMovies ?: emptyList(), navController)
 
                 TitleType(ListType.Popular.name, navController)
-                MovieGrid(movies = popularMovies ?: emptyList())
+                MovieGrid(movies = popularMovies ?: emptyList(), navController)
 
                 TitleType(ListType.TopRated.name, navController)
-                MovieGrid(movies = popularMovies ?: emptyList())
+                MovieGrid(movies = popularMovies ?: emptyList(), navController)
             }
         }
     )

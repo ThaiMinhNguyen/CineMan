@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.nemo.cineman.api.AuthRepository
 import com.nemo.cineman.api.MovieRepository
+import com.nemo.cineman.entity.SharedPreferenceManager
 import com.nemo.cineman.viewmodel.AuthViewModel
 import com.nemo.cineman.viewmodel.MainViewModel
 import com.nemo.cineman.viewmodel.MovieDetailViewModel
@@ -31,6 +32,9 @@ class ApiTest {
     @Inject
     lateinit var authRepository: AuthRepository
 
+    @Inject
+    lateinit var sharedPreferenceManager: SharedPreferenceManager
+
     lateinit var mainViewModel: MainViewModel
     lateinit var movieDetailViewModel: MovieDetailViewModel
     lateinit var authViewModel: AuthViewModel
@@ -44,9 +48,9 @@ class ApiTest {
     @Before
     fun setup(){
         hiltRule.inject()
-        mainViewModel = MainViewModel(movieRepository)
+        mainViewModel = MainViewModel(movieRepository, authRepository, sharedPreferenceManager)
         movieDetailViewModel = MovieDetailViewModel(movieRepository)
-        authViewModel = AuthViewModel(authRepository)
+        authViewModel = AuthViewModel(authRepository, sharedPreferenceManager)
     }
 
     @Test

@@ -18,7 +18,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 
-@InstallIn(SingletonComponent::class)
+@InstallIn(SingletonComponent::class) //xác định phạm vi của Module
 @Module
 object AppModule {
     private const val APIKEY = "62155d3012f8cbb0d312c96483845af9"
