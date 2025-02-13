@@ -1,7 +1,6 @@
 package com.nemo.cineman.api
 
 import com.nemo.cineman.entity.DetailMovie
-import com.nemo.cineman.entity.DetailMovieResponse
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieResponse
