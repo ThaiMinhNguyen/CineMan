@@ -71,7 +71,7 @@ fun MenuScreen(
             launchSingleTop = true
         }
     }
-    val icon = Icons.Default.Info // Example icon
+    val icon = Icons.Default.Info
 
     Scaffold(
         topBar = {

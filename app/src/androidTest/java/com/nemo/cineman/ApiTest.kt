@@ -12,6 +12,8 @@ import com.nemo.cineman.viewmodel.MainViewModel
 import com.nemo.cineman.viewmodel.MovieDetailViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,7 +58,7 @@ class ApiTest {
     @Test
     fun fetchMovie(){
 
-        var latch = CountDownLatch(4)
+        var latch = CountDownLatch(5)
 
         mainViewModel.nowPlayingMovies.observeForever { movies ->
             if (movies != null) {
@@ -79,14 +81,40 @@ class ApiTest {
             }
         }
 
+        movieDetailViewModel.movie.observeForever{ movie ->
+            if(movie != null){
+                Log.d("MyLogTest", "Fetched movie detail: $movie")
+                latch.countDown()
+            } else {
+                Log.e("MyLogTest", "Fetched movie detail: null")
+            }
+
+        }
+
 
 
         mainViewModel.getNowPlayingMovies(1)
         movieDetailViewModel.getSimilarMovie(213213, 1)
         movieDetailViewModel.getMovieTrailer(533535)
+        movieDetailViewModel.getMovieDetail(939243)
 
 
         latch.await(5, TimeUnit.SECONDS)
+
+    }
+
+    @Test
+    fun testGetMovieDetail() = runTest {
+        // Gọi API thực tế
+        val result = movieRepository.getMovieDetail(1)
+
+        // In ra dữ liệu nhận được
+        result.onSuccess { movie ->
+            println("Fetched movie: $movie")
+        }.onFailure { error ->
+            println("Failed to fetch movie: ${error.message}")
+        }
+
 
     }
 }

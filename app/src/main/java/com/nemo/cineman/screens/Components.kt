@@ -298,7 +298,7 @@ fun TitleTypePreview(){
 
 @Composable
 fun DefaultBottomBar(navController: NavController){
-    BottomAppBar(contentColor = Color.White, containerColor = Color.Black) {
+    BottomAppBar(contentColor = Color.White, containerColor = MaterialTheme.colorScheme.primary) {
         IconButton(
             onClick = {
                 navController.navigate("menu") {

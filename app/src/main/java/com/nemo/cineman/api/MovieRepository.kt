@@ -1,9 +1,13 @@
 package com.nemo.cineman.api
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
+import com.google.gson.Gson
+import com.nemo.cineman.entity.DetailMovie
+import com.nemo.cineman.entity.DetailMovieResponse
 import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
@@ -86,6 +90,18 @@ class MovieRepository @Inject constructor(
             ),
             pagingSourceFactory = { SearchMoviePagingSource(movieService, name) }
         ).flow
+    }
+
+    suspend fun getMovieDetail(id: Int) : Result<DetailMovie>{
+        return try {
+            val response = movieService.getMovieDetail(id)
+            val json = Gson().toJson(response)
+            Log.d("MyLog", "Full JSON Response: $json")
+            Result.success(response)
+        } catch (e:Exception) {
+            Result.failure(e)
+        }
+
     }
 
     suspend fun fetchMovieCertification(id: Int) : Result<MovieCertification?> {

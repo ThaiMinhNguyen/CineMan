@@ -33,7 +33,7 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.nemo.cineman.viewmodel.SearchViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun SearchScreen (navController: NavController, searchViewModel: SearchViewModel = hiltViewModel()){
     val searchText by searchViewModel.searchText.collectAsState()

@@ -1,5 +1,7 @@
 package com.nemo.cineman.api
 
+import com.nemo.cineman.entity.DetailMovie
+import com.nemo.cineman.entity.DetailMovieResponse
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieResponse
@@ -72,9 +74,9 @@ interface MovieService {
         "accept: application/json"
     )
     @GET("movie/{movie_id}")
-    fun getMovieDetail(
+    suspend fun getMovieDetail(
         @Path("movie_id") movieId: Int
-    ): Call<Movie>
+    ): DetailMovie
 
 
     @Headers(
