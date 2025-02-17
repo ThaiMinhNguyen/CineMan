@@ -41,12 +41,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
@@ -55,6 +58,9 @@ import coil.compose.AsyncImage
 import com.nemo.cineman.R
 import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.entity.Movie
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 
 @Composable
@@ -332,4 +338,23 @@ fun DefaultBottomBar(navController: NavController){
             Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
         }
     }
+}
+
+@Composable
+fun YouTubePlayer(videoKey: String) {
+    val context = LocalContext.current
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    AndroidView(factory = { ctx ->
+        YouTubePlayerView(ctx).apply {
+            lifecycle.addObserver(this)
+
+            addYouTubePlayerListener(object :AbstractYouTubePlayerListener(){
+                override fun onReady(youTubePlayer: YouTubePlayer) {
+                    youTubePlayer.loadVideo(videoKey, 0f)
+                }
+            })
+
+        }
+    })
 }

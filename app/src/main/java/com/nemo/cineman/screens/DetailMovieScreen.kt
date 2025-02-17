@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,19 +15,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,42 +38,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlurEffect
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.nemo.cineman.R
-import com.nemo.cineman.entity.DetailMovie
-import com.nemo.cineman.entity.Genre
-import com.nemo.cineman.entity.ProductionCompany
-import com.nemo.cineman.entity.ProductionCountry
-import com.nemo.cineman.entity.SpokenLanguage
 import com.nemo.cineman.viewmodel.MovieDetailViewModel
 
 @Composable
 fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailViewModel: MovieDetailViewModel = hiltViewModel()){
     val movie by movieDetailViewModel.movie.observeAsState()
     val isLoading by movieDetailViewModel.isLoading.observeAsState(false)
+    val videoResults by movieDetailViewModel.videoResults.observeAsState()
 
     LaunchedEffect(Unit) {
         movieDetailViewModel.getMovieDetail(movieId)
+        movieDetailViewModel.getMovieTrailer(movieId)
     }
 
-    if (isLoading == true){
+    if (isLoading){
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -115,7 +105,9 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
                     .fillMaxSize()
                     .padding(top = 250.dp)
                     .background(Color.Black.copy(alpha = 0.8f)) // Tạo nền mờ
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+                ,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
@@ -188,6 +180,32 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
                         color = Color.White
                     )
                 }
+                Text(
+                    text = "Trailer & More",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                videoResults?.let {
+                    // Khởi tạo trạng thái cho Pager
+                    val size = videoResults!!.size
+                    val pagerState = rememberPagerState(pageCount = {size})
+
+                    // Sử dụng HorizontalPager thay cho LazyRow
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 20.dp)
+                    ) { page ->
+                        Box(
+                            modifier = Modifier
+                                .width(300.dp)
+                                .height(200.dp)
+                        ) {
+                            YouTubePlayer(videoKey = videoResults!![page].key)
+                        }
+                    }
+                }
             }
         }
     }
@@ -203,7 +221,7 @@ fun ActionButtonsRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        horizontalArrangement = Arrangement.Start // Căn các item về bên phải
+        horizontalArrangement = Arrangement.Start
     ) {
         IconButton(
             onClick = onFavouriteClick,

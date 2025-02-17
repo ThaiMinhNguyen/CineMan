@@ -4,10 +4,8 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import com.google.gson.Gson
 import com.nemo.cineman.entity.DetailMovie
-import com.nemo.cineman.entity.DetailMovieResponse
 import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
@@ -104,6 +102,15 @@ class MovieRepository @Inject constructor(
 
     }
 
+    suspend fun getMovieTrailer(id: Int) : Result<List<VideoResult>>{
+        return try {
+            val response = movieService.getMovieTrailer(id)
+            Result.success(response.results)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
     suspend fun fetchMovieCertification(id: Int) : Result<MovieCertification?> {
         val response = movieService.getMovieCert(id).awaitResponse()
         try{
@@ -124,20 +131,6 @@ class MovieRepository @Inject constructor(
             if(response.isSuccessful){
                 val movies = response.body()?.results
                 return Result.success(movies)
-            } else {
-                return Result.failure(Throwable("Error: ${response.errorBody()?.string()}"))
-            }
-        } catch (e: Exception){
-            return Result.failure(Throwable(e))
-        }
-    }
-
-    suspend fun fetchMovieTrailer(id: Int) : Result<List<VideoResult>?> {
-        val response = movieService.getMovieTrailer(id).awaitResponse()
-        try{
-            if(response.isSuccessful){
-                val videoResponse = response.body()?.results
-                return Result.success(videoResponse)
             } else {
                 return Result.failure(Throwable("Error: ${response.errorBody()?.string()}"))
             }

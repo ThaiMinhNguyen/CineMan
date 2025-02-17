@@ -100,9 +100,9 @@ interface MovieService {
         "accept: application/json"
     )
     @GET("movie/{movie_id}/videos")
-    fun getMovieTrailer(
+    suspend fun getMovieTrailer(
         @Path("movie_id") movieId: Int
-    ) : Call<VideoResponse>
+    ) : VideoResponse
 
 
 }

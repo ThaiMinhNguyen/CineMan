@@ -118,9 +118,9 @@ class MovieDetailViewModel  @Inject constructor(
 
     fun getMovieTrailer(id: Int){
         viewModelScope.launch {
-            val result = movieRepository.fetchMovieTrailer(id)
+            val result = movieRepository.getMovieTrailer(id)
             result.onSuccess { videos ->
-                _videoResults.postValue(videos!!)
+                _videoResults.postValue(videos)
                 Log.d("MyLog", "Fetch movie trailers: ${videos}")
             }.onFailure { exception ->
                 Log.e("MyLog", "Failed to fetch movie trailer: ${exception.message}")
