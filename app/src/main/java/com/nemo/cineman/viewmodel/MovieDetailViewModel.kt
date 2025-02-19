@@ -22,56 +22,6 @@ import javax.inject.Inject
 class MovieDetailViewModel  @Inject constructor(
    private val movieRepository: MovieRepository
 ) : ViewModel() {
-    val alt_movie = DetailMovie(
-        adult = false,
-        backdropPath = null,
-        belongsToCollection = null,
-        budget = 0,
-        genres = listOf(
-            Genre(id = 35, name = "Comedy"),
-            Genre(id = 27, name = "Horror")
-        ),
-        homepage = "",
-        id = 321348,
-        imdbId = "tt0867605",
-        originCountry = listOf("US"),
-        originalLanguage = "en",
-        originalTitle = "Oh My Ghost!",
-        overview = "A horror-comedy story, Oh my Ghost is about Trixie (Rufa Mae Quinto), " +
-                "a beautiful and sexy ad agency executive who focuses on her career and less of her love life. " +
-                "Even her best friend and partner in the agency, Alvin (Marvin Agustin), tries to make moves on her " +
-                "but just doesn't work. Meanwhile, three young egotistic guys - Dennis (Paolo Contis), Jeff (Carlos Agassi) " +
-                "and Buboy (Uma Khouny), meet Trixie in the gym who get so attracted and madly in love with her. " +
-                "Because of their arrogance and conceitedness, Trixie turns each one down that makes the three angry at her. " +
-                "To get even with her, they attempt to rape her that lead to a fatal accident. " +
-                "So sudden and untimely, Trixie's ghost cannot accept it and decides to take revenge. " +
-                "Horror-comic situations follow as she haunts the three to obtain justice.",
-        popularity = 0.608,
-        posterPath = null,
-        productionCompanies = listOf(
-            ProductionCompany(
-                id = 47208,
-                logoPath = "/wC6oTPnoGM40h3Hj19dT7Dwk5H5.png",
-                name = "OctoArts Films",
-                originCountry = "PH"
-            )
-        ),
-        productionCountries = listOf(
-            ProductionCountry(iso31661 = "PH", name = "Philippines")
-        ),
-        releaseDate = "2006-01-01",
-        revenue = 0,
-        runtime = 0,
-        spokenLanguages = listOf(
-            SpokenLanguage(englishName = "Tagalog", iso6391 = "tl", name = null.toString())
-        ),
-        status = "Released",
-        tagline = "",
-        title = "Oh My Ghost!",
-        video = false,
-        voteAverage = 0.0,
-        voteCount = 0
-    )
 
     private val _movie = MutableLiveData<DetailMovie>()
     val movie: LiveData<DetailMovie> get() = _movie

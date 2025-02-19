@@ -2,6 +2,7 @@ package com.nemo.cineman.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -74,135 +75,138 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
             )
         }
     } else {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Ảnh nền (Backdrop)
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp),
-                model = "https://image.tmdb.org/t/p/w500${movie?.backdropPath ?: ""}",
-                contentDescription = "Backdrop Image",
-                contentScale = ContentScale.Crop,
-                error = painterResource(id = R.drawable.ic_launcher_background) // Hình mặc định nếu lỗi
-            )
-
-            // Nút quay lại
-            IconButton(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .background(Color.Black.copy(alpha = 0.5f), shape = CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color.White
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 250.dp)
-                    .background(Color.Black.copy(alpha = 0.8f)) // Tạo nền mờ
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
-                ,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-
-                Text(
-                    text = movie?.title ?: "Unknown Title",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Ảnh nền (Backdrop)
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                    model = "https://image.tmdb.org/t/p/w500${movie?.backdropPath ?: ""}",
+                    contentDescription = "Backdrop Image",
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(id = R.drawable.ic_launcher_background) // Hình mặc định nếu lỗi
                 )
 
-                ActionButtonsRow(
-                    { /* TODO: Xử lý sự kiện */ },
-                    {/* TODO: Xử lý sự kiện */ },
-                    {/* TODO: Xử lý sự kiện */ })
-
-                Text(
-                    text = "Release Date: ${movie?.releaseDate ?: "Unknown"}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-
-                // Thể loại phim
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(movie?.genres?.count() ?: 0) { index ->
-                        Text(
-                            text = movie?.genres?.get(index)?.name ?: "Unknown Genre",
-                            color = Color.White,
-                            modifier = Modifier
-                                .border(1.dp, Color.White, RoundedCornerShape(8.dp))
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
+                // Nút quay lại
+                IconButton(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .background(Color.Black.copy(alpha = 0.5f), shape = CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
                 }
 
-                // Nội dung phim
-                Text(
-                    text = movie?.overview ?: "No description available.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 250.dp)
+                        .background(Color.Black.copy(alpha = 0.8f)) // Tạo nền mờ
+                        .padding(16.dp)
+                        ,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
 
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Production: ")
-                        }
-                        append(movie?.productionCompanies?.joinToString { it.name } ?: "Unknown")
-                    },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
-
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Countries: ")
-                        }
-                        append(movie?.productionCountries?.joinToString { it.name } ?: "Unknown")
-                    },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Star, contentDescription = "Rating", tint = Color.Yellow)
-                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${movie?.voteAverage ?: "N/A"} (${movie?.voteCount ?: 0} votes)",
+                        text = movie?.title ?: "Unknown Title",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    ActionButtonsRow(
+                        { /* TODO: Xử lý sự kiện */ },
+                        {/* TODO: Xử lý sự kiện */ },
+                        {/* TODO: Xử lý sự kiện */ })
+
+                    Text(
+                        text = "Release Date: ${movie?.releaseDate ?: "Unknown"}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+
+                    // Thể loại phim
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(movie?.genres?.count() ?: 0) { index ->
+                            Text(
+                                text = movie?.genres?.get(index)?.name ?: "Unknown Genre",
+                                color = Color.White,
+                                modifier = Modifier
+                                    .border(1.dp, Color.White, RoundedCornerShape(8.dp))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
+
+                    // Nội dung phim
+                    Text(
+                        text = movie?.overview ?: "No description available.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White
                     )
-                }
-                Text(
-                    text = "Trailer & More",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                videoResults?.let {
-                    // Khởi tạo trạng thái cho Pager
-                    val size = videoResults!!.size
-                    val pagerState = rememberPagerState(pageCount = {size})
 
-                    // Sử dụng HorizontalPager thay cho LazyRow
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.fillMaxWidth(),
-                        contentPadding = PaddingValues(horizontal = 20.dp)
-                    ) { page ->
-                        Box(
-                            modifier = Modifier
-                                .width(300.dp)
-                                .height(200.dp)
-                        ) {
-                            YouTubePlayer(videoKey = videoResults!![page].key)
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Production: ")
+                            }
+                            append(movie?.productionCompanies?.joinToString { it.name }
+                                ?: "Unknown")
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White
+                    )
+
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Countries: ")
+                            }
+                            append(movie?.productionCountries?.joinToString { it.name }
+                                ?: "Unknown")
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Star, contentDescription = "Rating", tint = Color.Yellow)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "${movie?.voteAverage ?: "N/A"} (${movie?.voteCount ?: 0} votes)",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White
+                        )
+                    }
+                    Text(
+                        text = "Trailer & More",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    videoResults?.let {
+                        // Khởi tạo trạng thái cho Pager
+                        val size = videoResults!!.size
+                        val pagerState = rememberPagerState(pageCount = { size })
+
+                        // Sử dụng HorizontalPager thay cho LazyRow
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 20.dp)
+                        ) { page ->
+                            Box(
+                                modifier = Modifier
+                                    .width(300.dp)
+                                    .height(200.dp)
+                            ) {
+                                YouTubePlayer(videoKey = videoResults!![page].key)
+                            }
                         }
                     }
                 }

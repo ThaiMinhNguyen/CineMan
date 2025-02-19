@@ -65,12 +65,11 @@ class MainViewModel @Inject constructor(
                     var attempts = 0
                     val maxRetries = 3
                     var result: Result<SessionResponse?>? = null
-                    while (attempts < maxRetries && (result == null || result.isFailure == true)) {
+                    while (attempts < maxRetries) {
                         result = authRepository.getNewSession(token)
+                        if (result.isSuccess) break
+                        delay(1000 * (attempts + 1).toLong())
                         attempts++
-                        if (result.isFailure) {
-                            delay(1000 * attempts.toLong())
-                        }
                     }
                     if (result?.isSuccess == true) {
                         getNowPlayingMovies(1)
@@ -89,6 +88,9 @@ class MainViewModel @Inject constructor(
                         }
                     }
 
+                } else {
+                    _notificationEvent.value = "Không tìm thấy request token. Vui lòng thử lại."
+                    Log.e("MyLog", "checkSession: Request token is missing")
                 }
 
             } else {
