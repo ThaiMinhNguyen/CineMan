@@ -1,5 +1,6 @@
 package com.nemo.cineman.api
 
+import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.DetailMovie
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
@@ -104,5 +105,6 @@ interface MovieService {
         @Path("movie_id") movieId: Int
     ) : VideoResponse
 
+    //=========================================
 
 }

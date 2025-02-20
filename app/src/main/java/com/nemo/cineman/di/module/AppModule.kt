@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import com.nemo.cineman.api.AuthService
 import com.nemo.cineman.api.MovieService
+import com.nemo.cineman.api.UserService
 import com.nemo.cineman.room.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -51,6 +52,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthService(retrofit: Retrofit): AuthService = retrofit.create(AuthService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserService(retrofit: Retrofit): UserService = retrofit.create(UserService::class.java)
 
     @Provides
     @Singleton
