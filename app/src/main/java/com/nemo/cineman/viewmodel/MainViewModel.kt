@@ -1,6 +1,5 @@
 package com.nemo.cineman.viewmodel
 
-import android.app.Notification
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +11,6 @@ import com.nemo.cineman.api.AuthRepository
 import com.nemo.cineman.api.MovieRepository
 import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.entity.Movie
-import com.nemo.cineman.entity.RequestTokenBody
 import com.nemo.cineman.entity.SessionResponse
 import com.nemo.cineman.entity.SharedPreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -124,12 +122,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             val result = movieRepository.fetchNowPlayingMovie(page)
             result.onSuccess { movies ->
-                if (movies != null) {
-
-                    _nowPlayingMovies.postValue(movies!!)
-                } else {
-                    Log.d("MyLog", "No movie fetched")
-                }
+                movies?.let { safeMovies ->
+                    _nowPlayingMovies.postValue(safeMovies)
+                } ?: Log.d("MyLog", "No movie fetched")
             }.onFailure { exception ->
                 Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
             }
@@ -137,15 +132,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getPopularMovies(page: Int = 1) {
+    private fun getPopularMovies(page: Int = 1) {
         viewModelScope.launch {
             val result = movieRepository.fetchPopularMovie(page)
             result.onSuccess { movies ->
-                if (movies != null) {
-                    _popularMovies.postValue(movies!!)
-                } else {
-                    Log.d("MyLog", "No movie fetched")
-                }
+                movies?.let { safeMovies ->
+                    _popularMovies.postValue(safeMovies)
+                } ?: Log.d("MyLog", "No movie fetched")
+
             }.onFailure { exception ->
                 Log.e("MyLog", "Failed to fetch movies: ${exception.message}")
             }
