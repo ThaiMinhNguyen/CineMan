@@ -1,5 +1,6 @@
 package com.nemo.cineman.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,10 +11,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +31,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,6 +61,8 @@ fun MenuScreen(
     val onDismiss = {
         viewModel.onNotificationHandled()
     }
+
+    var isExpanded by remember{ mutableStateOf(false) }
 
     val logOut = {
         viewModel.onLogOutHandled()
@@ -83,19 +92,29 @@ fun MenuScreen(
                 title = {
                     Text(text = "Menu")
                 },
-                navigationIcon = {
-                    IconButton(onClick = logOut) {
+                actions = {
+                    IconButton(onClick = { isExpanded = true }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back button"
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "Menu trailing icon"
                         )
                     }
-                },
-                actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Menu trailing icon"
+                    DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
+                        DropdownMenuItem(
+                            text = { Text("Account") },
+                            onClick = {
+                                isExpanded = false
+                                navController.navigate("accountDetail")
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Log out") },
+                            onClick = {
+                                Log.d("MyLog", "Log out pressed")
+                                logOut()
+                                isExpanded = false
+
+                            }
                         )
                     }
                 }

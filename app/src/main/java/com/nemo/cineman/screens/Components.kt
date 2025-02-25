@@ -41,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -56,7 +55,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import com.nemo.cineman.R
-import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.entity.Movie
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -161,7 +159,7 @@ fun MovieCard(movie: Movie, navController: NavController) {
                     .fillMaxHeight()
             ) {
                 Text(
-                    text = movie.title ?: "Unknown Title",
+                    text = movie.title,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -169,7 +167,7 @@ fun MovieCard(movie: Movie, navController: NavController) {
                 )
 
                 Text(
-                    text = movie.release_date ?: "Unknown Release Date",
+                    text = movie.release_date,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
@@ -177,7 +175,7 @@ fun MovieCard(movie: Movie, navController: NavController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = movie.overview ?: "No overview available",
+                    text = movie.overview,
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -186,7 +184,7 @@ fun MovieCard(movie: Movie, navController: NavController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Rating: ${movie.vote_average ?: 0}/10",
+                    text = "Rating: ${movie.vote_average}/10",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -323,13 +321,13 @@ fun DefaultBottomBar(navController: NavController){
             },
             modifier = Modifier.weight(1f)
         ) {
-            Icon(imageVector = Icons.Default.Search, contentDescription = "Home")
+            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
         }
         IconButton(
-            onClick = { /* Handle Home action */ },
+            onClick = { navController.navigate("accountDetail") },
             modifier = Modifier.weight(1f)
         ) {
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Home")
+            Icon(imageVector = Icons.Default.Person, contentDescription = "Account")
         }
         IconButton(
             onClick = { /* Handle Home action */ },
@@ -342,7 +340,6 @@ fun DefaultBottomBar(navController: NavController){
 
 @Composable
 fun YouTubePlayer(videoKey: String) {
-    val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     AndroidView(factory = { ctx ->

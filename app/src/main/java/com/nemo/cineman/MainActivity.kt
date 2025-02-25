@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nemo.cineman.entity.ListType
+import com.nemo.cineman.screens.AccountDetailScreen
 import com.nemo.cineman.screens.DetailMovieScreen
 import com.nemo.cineman.screens.ListMovieScreen
 import com.nemo.cineman.screens.WebViewScreen
@@ -94,6 +95,11 @@ class MainActivity : ComponentActivity() {
                             route = "searchMovie",
                         ) {
                             SearchScreen(navController = navController)
+                        }
+                        composable(
+                            route = "accountDetail"
+                        ) { 
+                            AccountDetailScreen(navController = navController)
                         }
                     }
                 }
