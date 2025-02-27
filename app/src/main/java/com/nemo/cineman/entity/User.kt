@@ -32,7 +32,13 @@ data class FavouriteBody(
     @SerializedName("favorite") val favourite : Boolean,
 )
 
-data class FavouriteResponse(
+data class WatchlistBody(
+    @SerializedName("media_type") val mediaType : String,
+    @SerializedName("media_id") val mediaId : Int,
+    @SerializedName("watchlist") val watchlist : Boolean,
+)
+
+data class AccountResponse(
     @SerializedName("status_code") val statusCode: Int,
     @SerializedName("status_message") val statusMessage: Int,
 )

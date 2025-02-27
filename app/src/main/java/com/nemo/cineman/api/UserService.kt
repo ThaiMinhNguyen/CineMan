@@ -3,7 +3,9 @@ package com.nemo.cineman.api
 import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
-import com.nemo.cineman.entity.FavouriteResponse
+import com.nemo.cineman.entity.AccountResponse
+import com.nemo.cineman.entity.VideoResponse
+import com.nemo.cineman.entity.WatchlistBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -25,13 +27,12 @@ interface UserService {
     @Headers(
         "accept: application/json"
     )
-    @POST("account/{account_id}/favorite")
+    @POST("account/account_id/favorite")
     suspend fun toggleMovieToFavourite(
-        @Path("account_id") accountId: Int,
+        @Query("session_id") sessionId: String,
         @Body requestBody : FavouriteBody
-    ) : FavouriteResponse
+    ) : AccountResponse
 
-//    https://api.themoviedb.org/3/movie/:movie_id/account_states?session_id=e26507544e6d60e8fc445d63d1b9773f01b38b8f
 
     @Headers(
         "accept: application/json"
@@ -41,4 +42,25 @@ interface UserService {
         @Path("movie_id") movieId: Int,
         @Query("session_id") sessionId: String
     ) : AccountStateResponse
+
+    @Headers(
+        "accept: application/json"
+    )
+    @POST("account/account_id/watchlist")
+    suspend fun toggleMovieToWatchlist(
+        @Query("session_id") sessionId: String,
+        @Body requestBody : WatchlistBody
+    ) : AccountResponse
+
+    @Headers(
+        "accept: application/json"
+    )
+    @GET("account/account_id/favorite/movies")
+    suspend fun getAllFavouriteMovie(
+        @Query("language") language: String? = "en-Us",
+        @Query("page") page: Int? = 1,
+        @Query("session_id") sessionId: String,
+        @Query("sort_by") sortBy: String? = "created_at.asc"
+    ) : VideoResponse
+
 }

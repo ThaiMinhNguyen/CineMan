@@ -4,7 +4,8 @@ import android.util.Log
 import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
-import com.nemo.cineman.entity.FavouriteResponse
+import com.nemo.cineman.entity.AccountResponse
+import com.nemo.cineman.entity.WatchlistBody
 import javax.inject.Inject
 
 class UserRepository @Inject constructor (
@@ -22,9 +23,39 @@ class UserRepository @Inject constructor (
         }
     }
 
-    suspend fun toggleMovieToFavourite(accountId : Int, movieId: Int, favourite: Boolean) : Result<FavouriteResponse>{
+    suspend fun toggleMovieToFavourite(sessionId: String, movieId: Int, favourite: Boolean) : Result<AccountResponse>{
         return try {
-            val response = userService.toggleMovieToFavourite(accountId, FavouriteBody("movie", movieId, favourite))
+            val response = userService.toggleMovieToFavourite(sessionId, FavouriteBody("movie", movieId, favourite))
+            Log.d("MyLog", "Add to favourite: $response")
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun toggleSeriesToFavourite(sessionId: String, movieId: Int, favourite: Boolean) : Result<AccountResponse>{
+        return try {
+            val response = userService.toggleMovieToFavourite(sessionId, FavouriteBody("tv", movieId, favourite))
+            Log.d("MyLog", "Add to favourite: $response")
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun toggleMovieToWatchlist(sessionId: String, movieId: Int, watchlist: Boolean) : Result<AccountResponse>{
+        return try {
+            val response = userService.toggleMovieToWatchlist(sessionId, WatchlistBody("movie", movieId, watchlist))
+            Log.d("MyLog", "Add to favourite: $response")
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun toggleSeriesToWatchlist(sessionId: String, movieId: Int, watchlist: Boolean) : Result<AccountResponse>{
+        return try {
+            val response = userService.toggleMovieToWatchlist(sessionId, WatchlistBody("tv", movieId, watchlist))
             Log.d("MyLog", "Add to favourite: $response")
             Result.success(response)
         } catch (e: Exception){
