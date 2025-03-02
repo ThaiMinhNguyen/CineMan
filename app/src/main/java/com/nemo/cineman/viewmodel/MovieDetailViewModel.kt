@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemo.cineman.api.MovieRepository
+import com.nemo.cineman.api.UserRepository
 import com.nemo.cineman.entity.DetailMovie
 import com.nemo.cineman.entity.Genre
 import com.nemo.cineman.entity.Movie
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailViewModel  @Inject constructor(
-   private val movieRepository: MovieRepository
+   private val movieRepository: MovieRepository,
+   private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _movie = MutableLiveData<DetailMovie>()
@@ -35,6 +37,14 @@ class MovieDetailViewModel  @Inject constructor(
     private val _isLoading = MutableLiveData<Boolean>(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _isFavourite = MutableLiveData<Boolean>(false)
+    val isFavourite: LiveData<Boolean> get() = _isFavourite
+
+    private val _isWatchlist = MutableLiveData<Boolean>(false)
+    val isWatchlist: LiveData<Boolean> get() = _isWatchlist
+
+    private val _ratedValue = MutableLiveData<Double>(0.0)
+    val ratedValue: LiveData<Double> get() = _ratedValue
 
     fun getMovieDetail(id: Int){
         _isLoading.value = true
@@ -74,6 +84,19 @@ class MovieDetailViewModel  @Inject constructor(
                 Log.d("MyLog", "Fetch movie trailers: ${videos}")
             }.onFailure { exception ->
                 Log.e("MyLog", "Failed to fetch movie trailer: ${exception.message}")
+            }
+        }
+    }
+
+    fun checkFavourite(movieId: Int, sessionId: String){
+        viewModelScope.launch {
+            val result = userRepository.checkMovieFavourite(movieId, sessionId)
+            result.onSuccess { accountResponseState ->
+                _isFavourite.value = accountResponseState.favorite
+                _isWatchlist.value = accountResponseState.watchlist
+                _ratedValue.value = accountResponseState.rated.value
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to fetch account state: ${exception.message}")
             }
         }
     }

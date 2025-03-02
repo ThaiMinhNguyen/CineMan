@@ -58,6 +58,10 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
     val movie by movieDetailViewModel.movie.observeAsState()
     val isLoading by movieDetailViewModel.isLoading.observeAsState(false)
     val videoResults by movieDetailViewModel.videoResults.observeAsState()
+    val isWatchlist by movieDetailViewModel.isWatchlist.observeAsState(false)
+    val isFavourite by movieDetailViewModel.isFavourite.observeAsState(false)
+    val ratedValue by movieDetailViewModel.ratedValue.observeAsState(0.0)
+
 
     LaunchedEffect(Unit) {
         movieDetailViewModel.getMovieDetail(movieId)
@@ -120,9 +124,13 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
                     )
 
                     ActionButtonsRow(
+                        isFavourite,
+                        isWatchlist,
+                        ratedValue,
                         { /* TODO: Xử lý sự kiện */ },
                         {/* TODO: Xử lý sự kiện */ },
-                        {/* TODO: Xử lý sự kiện */ })
+                        {/* TODO: Xử lý sự kiện */ }
+                    )
 
                     Text(
                         text = "Release Date: ${movie?.releaseDate ?: "Unknown"}",
@@ -217,6 +225,9 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
 
 @Composable
 fun ActionButtonsRow(
+    isFavourite: Boolean,
+    isWatchlist: Boolean,
+    ratedValue: Double,
     onFavouriteClick: () -> Unit,
     onMarkClick: () -> Unit,
     onShareClick: () -> Unit
@@ -231,26 +242,26 @@ fun ActionButtonsRow(
             onClick = onFavouriteClick,
             modifier = Modifier
                 .padding(4.dp)
-                .border(1.dp, Color.White, RoundedCornerShape(30.dp))
+                .border(1.dp,  if(isFavourite) Color.Red else Color.White, RoundedCornerShape(30.dp))
         ) {
             Icon(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "Favourite",
                 modifier = Modifier.size(24.dp),
-                tint = Color.White
+                tint = if(isFavourite) Color.Red else Color.White
             )
         }
         IconButton(
             onClick = onMarkClick,
             modifier = Modifier
                 .padding(4.dp)
-                .border(1.dp, Color.White, RoundedCornerShape(30.dp))
+                .border(1.dp, if(isFavourite) Color.Yellow else Color.White, RoundedCornerShape(30.dp))
         ) {
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = "Mark",
                 modifier = Modifier.size(24.dp),
-                tint = Color.White
+                tint = if(isFavourite) Color.Yellow else Color.White
             )
         }
         IconButton(

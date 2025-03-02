@@ -104,4 +104,12 @@ class SharedPreferenceManager @Inject constructor(
             apply()
         }
     }
+
+    fun checkGuestOrNot() : Boolean{
+        if(getGuestSessionId() == null){
+            return false
+        } else {
+            return true
+        }
+    }
 }

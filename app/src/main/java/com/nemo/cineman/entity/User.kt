@@ -46,6 +46,10 @@ data class AccountResponse(
 data class AccountStateResponse(
     @SerializedName("id") val id: Int,
     @SerializedName("favorite") val favorite: Boolean,
-    @SerializedName("rated") val rated: Boolean,
+    @SerializedName("rated") val rated: Rated,
     @SerializedName("watchlist") val watchlist: Boolean
+)
+
+data class Rated(
+    @SerializedName("value") val value: Double
 )
