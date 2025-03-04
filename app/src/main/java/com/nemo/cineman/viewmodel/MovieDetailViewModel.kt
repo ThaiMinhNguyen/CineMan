@@ -101,4 +101,8 @@ class MovieDetailViewModel  @Inject constructor(
         }
     }
 
+    fun updateRating(value: Double){
+        _ratedValue.value = value
+    }
+
 }
