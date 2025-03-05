@@ -88,6 +88,7 @@ fun DetailMovieScreen(
     LaunchedEffect(Unit) {
         movieDetailViewModel.getMovieDetail(movieId)
         movieDetailViewModel.getMovieTrailer(movieId)
+        movieDetailViewModel.checkFavourite(movieId)
     }
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -212,11 +213,8 @@ fun DetailMovieScreen(
                         color = Color.White
                     )
                     videoResults?.let {
-                        // Khởi tạo trạng thái cho Pager
                         val size = videoResults!!.size
                         val pagerState = rememberPagerState(pageCount = { size })
-
-                        // Sử dụng HorizontalPager thay cho LazyRow
                         HorizontalPager(
                             state = pagerState,
                             modifier = Modifier.fillMaxWidth(),

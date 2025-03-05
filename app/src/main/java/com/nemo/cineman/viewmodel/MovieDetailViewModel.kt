@@ -53,8 +53,8 @@ class MovieDetailViewModel  @Inject constructor(
 
 
     fun getMovieDetail(id: Int){
-        _isLoading.value = true
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 val result = movieRepository.getMovieDetail(id)
                 result.onSuccess {
@@ -72,6 +72,7 @@ class MovieDetailViewModel  @Inject constructor(
 
     fun getSimilarMovie(id: Int, page: Int) {
         viewModelScope.launch {
+
             val result = movieRepository.fetchSimilarMovie(id, page)
             result.onSuccess { movies ->
                 _similarMovies.postValue(movies!!)
@@ -84,6 +85,7 @@ class MovieDetailViewModel  @Inject constructor(
 
     fun getMovieTrailer(id: Int){
         viewModelScope.launch {
+            _isLoading.value = true
             val result = movieRepository.getMovieTrailer(id)
             result.onSuccess { videos ->
                 _videoResults.postValue(videos)
@@ -91,12 +93,14 @@ class MovieDetailViewModel  @Inject constructor(
             }.onFailure { exception ->
                 Log.e("MyLog", "Failed to fetch movie trailer: ${exception.message}")
             }
+            _isLoading.value = false
         }
     }
 
-    fun checkFavourite(movieId: Int, sessionId: String){
+    fun checkFavourite(movieId: Int){
         viewModelScope.launch {
-            val result = userRepository.checkMovieFavourite(movieId, sessionId)
+            _isLoading.value = true
+            val result = userRepository.checkMovieFavourite(movieId)
             result.onSuccess { accountResponseState ->
                 _isFavourite.value = accountResponseState.favorite
                 _isWatchlist.value = accountResponseState.watchlist
@@ -104,6 +108,7 @@ class MovieDetailViewModel  @Inject constructor(
             }.onFailure { exception ->
                 Log.e("MyLog", "Failed to fetch account state: ${exception.message}")
             }
+            _isLoading.value = false
         }
     }
 
@@ -119,6 +124,63 @@ class MovieDetailViewModel  @Inject constructor(
             }
             _ratedValue.value = value
             _isLoading.value = false
+        }
+    }
+
+    fun toggleMovieToFavourite(movieId: Int){
+        viewModelScope.launch {
+            val favourite = _isFavourite.value?: false
+            val result = userRepository.toggleMovieToFavourite(movieId, !favourite)
+            result.onSuccess { accountResponse ->
+                _message.value = accountResponse.statusMessage
+                _isFavourite.value = !favourite
+                Log.e("MyLog", "Add movie to favourite: ${accountResponse.statusMessage}")
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to add movie to favourite: ${exception.message}")
+            }
+        }
+    }
+
+    fun toggleMovieToWatchlist(movieId: Int){
+        viewModelScope.launch {
+            val watchlist = _isWatchlist.value?: false
+            val result = userRepository.toggleMovieToWatchlist(movieId, !watchlist)
+            result.onSuccess { accountResponse ->
+                _message.value = accountResponse.statusMessage
+                _isWatchlist.value = !watchlist
+                Log.e("MyLog", "Add movie to watchlist: ${accountResponse.statusMessage}")
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to add movie to watchlist: ${exception.message}")
+            }
+        }
+    }
+
+
+    fun toggleSeriesToFavourite(movieId: Int){
+        viewModelScope.launch {
+            val favourite = _isFavourite.value?: false
+            val result = userRepository.toggleSeriesToFavourite(movieId, !favourite)
+            result.onSuccess { accountResponse ->
+                _message.value = accountResponse.statusMessage
+                _isFavourite.value = !favourite
+                Log.e("MyLog", "Add movie to favourite: ${accountResponse.statusMessage}")
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to add movie to favourite: ${exception.message}")
+            }
+        }
+    }
+
+    fun toggleSeriesToWatchlist(movieId: Int){
+        viewModelScope.launch {
+            val watchlist = _isWatchlist.value?: false
+            val result = userRepository.toggleSeriesToWatchlist(movieId, !watchlist)
+            result.onSuccess { accountResponse ->
+                _message.value = accountResponse.statusMessage
+                _isFavourite.value = !watchlist
+                Log.e("MyLog", "Add movie to favourite: ${accountResponse.statusMessage}")
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to add movie to favourite: ${exception.message}")
+            }
         }
     }
 

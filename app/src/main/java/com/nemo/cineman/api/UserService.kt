@@ -41,7 +41,8 @@ interface UserService {
     @GET("movie/{movie_id}/account_states")
     suspend fun checkMovieFavourite(
         @Path("movie_id") movieId: Int,
-        @Query("session_id") sessionId: String
+        @Query("session_id") sessionId : String?,
+        @Query("guest_session_id") guestSessionId: String?,
     ) : AccountStateResponse
 
     @Headers(

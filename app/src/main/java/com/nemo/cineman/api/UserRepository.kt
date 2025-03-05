@@ -26,49 +26,75 @@ class UserRepository @Inject constructor (
         }
     }
 
-    suspend fun toggleMovieToFavourite(sessionId: String, movieId: Int, favourite: Boolean) : Result<AccountResponse>{
+    suspend fun toggleMovieToFavourite(movieId: Int, favourite: Boolean) : Result<AccountResponse>{
         return try {
-            val response = userService.toggleMovieToFavourite(sessionId, FavouriteBody("movie", movieId, favourite))
-            Log.d("MyLog", "Add to favourite: $response")
-            Result.success(response)
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            if (savedSessionId != null){
+                val response = userService.toggleMovieToFavourite(savedSessionId, FavouriteBody("movie", movieId, favourite))
+                Log.d("MyLog", "Add to favourite: $response")
+                Result.success(response)
+            } else {
+                Result.failure(IllegalStateException("No valid session found"))
+            }
         } catch (e: Exception){
             Result.failure(e)
         }
     }
 
-    suspend fun toggleSeriesToFavourite(sessionId: String, movieId: Int, favourite: Boolean) : Result<AccountResponse>{
+    suspend fun toggleSeriesToFavourite(movieId: Int, favourite: Boolean) : Result<AccountResponse>{
         return try {
-            val response = userService.toggleMovieToFavourite(sessionId, FavouriteBody("tv", movieId, favourite))
-            Log.d("MyLog", "Add to favourite: $response")
-            Result.success(response)
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            if (savedSessionId != null){
+                val response = userService.toggleMovieToFavourite(savedSessionId, FavouriteBody("tv", movieId, favourite))
+                Log.d("MyLog", "Add to favourite: $response")
+                Result.success(response)
+            } else {
+                Result.failure(IllegalStateException("No valid session found"))
+            }
         } catch (e: Exception){
             Result.failure(e)
         }
     }
 
-    suspend fun toggleMovieToWatchlist(sessionId: String, movieId: Int, watchlist: Boolean) : Result<AccountResponse>{
+    suspend fun toggleMovieToWatchlist(movieId: Int, watchlist: Boolean) : Result<AccountResponse>{
         return try {
-            val response = userService.toggleMovieToWatchlist(sessionId, WatchlistBody("movie", movieId, watchlist))
-            Log.d("MyLog", "Add to favourite: $response")
-            Result.success(response)
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            if (savedSessionId != null){
+                val response = userService.toggleMovieToWatchlist(savedSessionId, WatchlistBody("movie", movieId, watchlist))
+                Log.d("MyLog", "Add to favourite: $response")
+                Result.success(response)
+            } else {
+                Result.failure(IllegalStateException("No valid session found"))
+            }
         } catch (e: Exception){
             Result.failure(e)
         }
     }
 
-    suspend fun toggleSeriesToWatchlist(sessionId: String, movieId: Int, watchlist: Boolean) : Result<AccountResponse>{
+    suspend fun toggleSeriesToWatchlist(movieId: Int, watchlist: Boolean) : Result<AccountResponse>{
         return try {
-            val response = userService.toggleMovieToWatchlist(sessionId, WatchlistBody("tv", movieId, watchlist))
-            Log.d("MyLog", "Add to favourite: $response")
-            Result.success(response)
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            if (savedSessionId != null){
+                val response = userService.toggleMovieToWatchlist(savedSessionId, WatchlistBody("tv", movieId, watchlist))
+                Log.d("MyLog", "Add to favourite: $response")
+                Result.success(response)
+            } else {
+                Result.failure(IllegalStateException("No valid session found"))
+            }
         } catch (e: Exception){
             Result.failure(e)
         }
     }
 
-    suspend fun checkMovieFavourite(movieId: Int, sessionId: String) : Result<AccountStateResponse>{
+    suspend fun checkMovieFavourite(movieId: Int) : Result<AccountStateResponse>{
         return try {
-            val response = userService.checkMovieFavourite(movieId, sessionId)
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            val savedGuestSessionId = sharedPreferenceManager.getGuestSessionId()
+            val response = if(savedSessionId != null) {
+                userService.checkMovieFavourite(movieId, sessionId = savedSessionId, guestSessionId = null)
+            } else {
+                userService.checkMovieFavourite(movieId, sessionId = null, guestSessionId = savedGuestSessionId)
+            }
             Log.d("MyLog", "Check favourite: $response")
             Result.success(response)
         } catch (e: Exception){
