@@ -5,11 +5,14 @@ import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
+import com.nemo.cineman.entity.Rated
+import com.nemo.cineman.entity.SharedPreferenceManager
 import com.nemo.cineman.entity.WatchlistBody
 import javax.inject.Inject
 
 class UserRepository @Inject constructor (
-    private val userService: UserService
+    private val userService: UserService,
+    private val sharedPreferenceManager: SharedPreferenceManager
 ){
 
     suspend fun getAccountDetail(sessionId: String) : Result<Account>{
@@ -71,5 +74,35 @@ class UserRepository @Inject constructor (
         } catch (e: Exception){
             Result.failure(e)
         }
+    }
+
+    suspend fun addRateToMovie(movieId: Int, value: Double) : Result<AccountResponse>{
+        return try {
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            val savedGuestSessionId = sharedPreferenceManager.getGuestSessionId()
+            val rated = Rated(value)
+
+            val response = if (savedSessionId != null) {
+                userService.addRateToMovie(
+                    movieId = movieId,
+                    guestSessionId = null,
+                    sessionId = savedSessionId,
+                    rated = rated
+                )
+            } else if (savedGuestSessionId != null) {
+                userService.addRateToMovie(
+                    movieId = movieId,
+                    guestSessionId = savedGuestSessionId,
+                    sessionId = null,
+                    rated = rated
+                )
+            } else {
+                return Result.failure(IllegalStateException("No valid session found"))
+            }
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+
     }
 }

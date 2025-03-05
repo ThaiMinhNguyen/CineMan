@@ -4,6 +4,7 @@ import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
+import com.nemo.cineman.entity.Rated
 import com.nemo.cineman.entity.VideoResponse
 import com.nemo.cineman.entity.WatchlistBody
 import retrofit2.http.Body
@@ -62,5 +63,17 @@ interface UserService {
         @Query("session_id") sessionId: String,
         @Query("sort_by") sortBy: String? = "created_at.asc"
     ) : VideoResponse
+
+    @Headers(
+        "accept: application/json",
+        "Content-Type: application/json;charset=utf-8"
+    )
+    @POST("movie/{movie_id}/rating")
+    suspend fun addRateToMovie(
+        @Path("movie_id") movieId: Int,
+        @Query("guest_session_id") guestSessionId: String?,
+        @Query("session_id") sessionId : String?,
+        @Body rated: Rated
+    ) : AccountResponse
 
 }

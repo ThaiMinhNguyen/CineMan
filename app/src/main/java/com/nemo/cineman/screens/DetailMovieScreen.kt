@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -71,9 +72,13 @@ import com.nemo.cineman.viewmodel.MovieDetailViewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailViewModel: MovieDetailViewModel = hiltViewModel()){
+fun DetailMovieScreen(
+    movieId: Int,
+    navController: NavController,
+    movieDetailViewModel: MovieDetailViewModel = hiltViewModel()
+) {
     val movie by movieDetailViewModel.movie.observeAsState()
-    val isLoading by movieDetailViewModel.isLoading.observeAsState(false)
+    val isLoading by movieDetailViewModel.isLoading.collectAsState(false)
     val videoResults by movieDetailViewModel.videoResults.observeAsState()
     val isWatchlist by movieDetailViewModel.isWatchlist.observeAsState(false)
     val isFavourite by movieDetailViewModel.isFavourite.observeAsState(false)
@@ -84,18 +89,8 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
         movieDetailViewModel.getMovieDetail(movieId)
         movieDetailViewModel.getMovieTrailer(movieId)
     }
+    Box(modifier = Modifier.fillMaxSize()) {
 
-    if (isLoading){
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    } else {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Box(modifier = Modifier.fillMaxSize()) {
                 // Ảnh nền (Backdrop)
@@ -128,8 +123,7 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
                         .fillMaxSize()
                         .padding(top = 250.dp)
                         .background(Color.Black.copy(alpha = 0.8f)) // Tạo nền mờ
-                        .padding(16.dp)
-                        ,
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
 
@@ -147,7 +141,7 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
                         { /* TODO: Xử lý sự kiện */ },
                         {/* TODO: Xử lý sự kiện */ },
                         { ratingValue ->
-                            movieDetailViewModel.updateRating(ratingValue)
+                            movieDetailViewModel.updateRating(movieId, ratingValue)
                         },
                         {/* TODO: Xử lý sự kiện */ }
                     )
@@ -240,8 +234,23 @@ fun DetailMovieScreen(movieId: Int, navController: NavController, movieDetailVie
                 }
             }
         }
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.6f)), // Nền trong suốt làm mờ
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 4.dp
+                )
+            }
+        }
     }
+
 }
+
 
 @Composable
 fun ActionButtonsRow(
@@ -273,7 +282,7 @@ fun ActionButtonsRow(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "Favourite",
                 modifier = Modifier.size(24.dp),
-                tint = if(isFavourite) Color.Red else Color.White
+                tint = if (isFavourite) Color.Red else Color.White
             )
         }
         IconButton(
@@ -290,7 +299,7 @@ fun ActionButtonsRow(
                 imageVector = Icons.Default.Check,
                 contentDescription = "Mark",
                 modifier = Modifier.size(24.dp),
-                tint = if(isWatchlist) Color.Yellow else Color.White
+                tint = if (isWatchlist) Color.Yellow else Color.White
             )
         }
         RatingButton(ratedValue = ratedValue, onRateClick)
@@ -357,7 +366,7 @@ fun RatingButton(ratedValue: Double, updateRating: (Double) -> Unit) {
                     .padding(8.dp)
                     .background(Color.Gray.copy(alpha = 0.8f), shape = RoundedCornerShape(8.dp))
                     .padding(8.dp)
-            ){
+            ) {
                 RatingBar(onRatingChanged = updateRatingValue, rating = ratedV)
             }
         }

@@ -40,7 +40,7 @@ data class WatchlistBody(
 
 data class AccountResponse(
     @SerializedName("status_code") val statusCode: Int,
-    @SerializedName("status_message") val statusMessage: Int,
+    @SerializedName("status_message") val statusMessage: String,
 )
 
 data class AccountStateResponse(

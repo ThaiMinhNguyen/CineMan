@@ -15,6 +15,8 @@ import com.nemo.cineman.entity.ProductionCountry
 import com.nemo.cineman.entity.SpokenLanguage
 import com.nemo.cineman.entity.VideoResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,8 +36,8 @@ class MovieDetailViewModel  @Inject constructor(
     private val _videoResults = MutableLiveData<List<VideoResult>>()
     val videoResults: LiveData<List<VideoResult>> get() = _videoResults
 
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
 
     private val _isFavourite = MutableLiveData<Boolean>(false)
     val isFavourite: LiveData<Boolean> get() = _isFavourite
@@ -45,6 +47,10 @@ class MovieDetailViewModel  @Inject constructor(
 
     private val _ratedValue = MutableLiveData<Double>(0.0)
     val ratedValue: LiveData<Double> get() = _ratedValue
+
+    private val _message = MutableLiveData<String>(null)
+    val message : LiveData<String> get() = _message
+
 
     fun getMovieDetail(id: Int){
         _isLoading.value = true
@@ -101,8 +107,19 @@ class MovieDetailViewModel  @Inject constructor(
         }
     }
 
-    fun updateRating(value: Double){
-        _ratedValue.value = value
+    fun updateRating(movieId: Int, value: Double){
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = userRepository.addRateToMovie(movieId, value)
+            result.onSuccess { accountResponse ->
+                _message.value = accountResponse.statusMessage
+                Log.e("MyLog", "Add rating: ${accountResponse.statusMessage} / value: $value")
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to add rating: ${exception.message}")
+            }
+            _ratedValue.value = value
+            _isLoading.value = false
+        }
     }
 
 }
