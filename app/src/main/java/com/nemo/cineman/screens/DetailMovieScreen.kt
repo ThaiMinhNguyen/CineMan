@@ -238,7 +238,7 @@ fun DetailMovieScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.6f)), // Nền trong suốt làm mờ
+                    .background(Color.Black.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
