@@ -1,5 +1,7 @@
 package com.nemo.cineman.screens
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -63,6 +66,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -139,12 +143,12 @@ fun DetailMovieScreen(
                         isFavourite,
                         isWatchlist,
                         ratedValue,
-                        { /* TODO: Xử lý sự kiện */ },
-                        {/* TODO: Xử lý sự kiện */ },
+                        { movieDetailViewModel.toggleMovieToFavourite(movieId) },
+                        { movieDetailViewModel.toggleMovieToWatchlist(movieId) },
                         { ratingValue ->
                             movieDetailViewModel.updateRating(movieId, ratingValue)
                         },
-                        {/* TODO: Xử lý sự kiện */ }
+                        "https://www.themoviedb.org/movie/${movieId}"
                     )
 
                     Text(
@@ -258,8 +262,21 @@ fun ActionButtonsRow(
     onFavouriteClick: () -> Unit,
     onMarkClick: () -> Unit,
     onRateClick: (Double) -> Unit,
-    onShareClick: () -> Unit
+    url: String
 ) {
+    val context = LocalContext.current
+
+    fun shareUrl(context: Context, url: String){
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url)
+            type = "text/plain"
+        }
+
+        val choosenIntent = Intent.createChooser(shareIntent, "Share via")
+        startActivity(context, choosenIntent, null)
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -302,7 +319,7 @@ fun ActionButtonsRow(
         }
         RatingButton(ratedValue = ratedValue, onRateClick)
         IconButton(
-            onClick = onShareClick,
+            onClick = {shareUrl(context, url)},
             modifier = Modifier
                 .padding(4.dp)
                 .border(1.dp, Color.White, RoundedCornerShape(30.dp))

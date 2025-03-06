@@ -1,13 +1,20 @@
 package com.nemo.cineman.api
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
+import com.nemo.cineman.entity.ListPagingSource
+import com.nemo.cineman.entity.MovieList
 import com.nemo.cineman.entity.Rated
+import com.nemo.cineman.entity.SearchMoviePagingSource
 import com.nemo.cineman.entity.SharedPreferenceManager
 import com.nemo.cineman.entity.WatchlistBody
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class UserRepository @Inject constructor (
@@ -130,5 +137,15 @@ class UserRepository @Inject constructor (
             Result.failure(e)
         }
 
+    }
+
+    fun getAccountList() : Flow<PagingData<MovieList>>{
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { ListPagingSource(userService, sharedPreferenceManager) }
+        ).flow
     }
 }

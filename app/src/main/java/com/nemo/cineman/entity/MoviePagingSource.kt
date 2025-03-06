@@ -6,8 +6,8 @@ import com.nemo.cineman.api.MovieService
 import retrofit2.awaitResponse
 
 class MoviePagingSource(
-    private val movieService: MovieService, // API service
-    private val type: ListType // Loại phim (NowPlaying, Popular, TopRated, ...)
+    private val movieService: MovieService,
+    private val type: ListType
 ) : PagingSource<Int, Movie>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {

@@ -4,6 +4,7 @@ import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
+import com.nemo.cineman.entity.MovieListResponse
 import com.nemo.cineman.entity.Rated
 import com.nemo.cineman.entity.VideoResponse
 import com.nemo.cineman.entity.WatchlistBody
@@ -77,4 +78,12 @@ interface UserService {
         @Body rated: Rated
     ) : AccountResponse
 
+    @Headers(
+        "accept: application/json"
+    )
+    @GET("account/account_id/lists")
+    suspend fun getAccountList(
+        @Query("page") page: Int? = 1,
+        @Query("session_id") sessionId: String
+    ) : MovieListResponse
 }

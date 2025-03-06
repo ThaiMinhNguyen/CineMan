@@ -53,3 +53,21 @@ data class AccountStateResponse(
 data class Rated(
     @SerializedName("value") val value: Double
 )
+
+data class MovieListResponse(
+    val page: Int,
+    val results: List<MovieList>,
+    @SerializedName("total_pages") val totalPage: Int,
+    @SerializedName("total_results") val totalResult: Int
+)
+
+data class MovieList(
+    val description: String,
+    val favorite_count: Int,
+    val id: Int,
+    val item_count: Int,
+    val iso_639_1: String,
+    val list_type: String,
+    val name: String,
+    val poster_path: String?
+)
