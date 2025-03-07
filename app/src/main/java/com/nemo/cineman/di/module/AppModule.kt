@@ -3,6 +3,7 @@ package com.nemo.cineman.di.module
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.nemo.cineman.BuildConfig
 import com.nemo.cineman.api.AuthService
 import com.nemo.cineman.api.MovieService
 import com.nemo.cineman.api.UserService
@@ -22,7 +23,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class) //xác định phạm vi của Module
 @Module
 object AppModule {
-    private const val APIKEY = "62155d3012f8cbb0d312c96483845af9"
+    private const val APIKEY = BuildConfig.API_KEY
+
 
     @Provides
     @Singleton
