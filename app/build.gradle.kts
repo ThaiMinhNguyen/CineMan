@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -5,6 +7,14 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+}
+
+val localProp = Properties()
+val file = File(rootDir,"apikey.properties")
+if(file.exists() && file.isFile){
+    file.inputStream().use {
+        localProp.load(it)
+    }
 }
 
 android {
@@ -31,6 +41,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_KEY", localProp.getProperty("API_KEY"))
+        }
+        debug {
+            buildConfigField("String", "API_KEY", localProp.getProperty("API_KEY"))
         }
     }
     compileOptions {
@@ -42,6 +56,8 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+        resValues = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.13"
@@ -54,7 +70,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,8 +92,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation("com.google.dagger:hilt-android:2.52")
-    kapt("com.google.dagger:hilt-android-compiler:2.52")
+    implementation("com.google.dagger:hilt-android:2.55")
+    kapt("com.google.dagger:hilt-android-compiler:2.55")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation(libs.glide)
     implementation(libs.androidx.room.runtime)
@@ -88,20 +103,21 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.truth)
     androidTestImplementation(libs.core.testing)
-    testImplementation("com.google.dagger:hilt-android-testing:2.52")
-    kaptTest("com.google.dagger:hilt-android-compiler:2.52")
-    testAnnotationProcessor("com.google.dagger:hilt-android-compiler:2.52")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.52")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.52")
-    androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:2.52")
-    testImplementation("io.mockk:mockk:1.13.12")
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
-    androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.0")
-    implementation("com.github.bumptech.glide:glide:4.13.0")
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    testImplementation("com.google.dagger:hilt-android-testing:2.55")
+    kaptTest("com.google.dagger:hilt-android-compiler:2.55")
+    testAnnotationProcessor("com.google.dagger:hilt-android-compiler:2.55")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.55")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.55")
+    androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:2.55")
+    testImplementation("io.mockk:mockk:1.13.16")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.7")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
     val paging_version = "3.3.5"
     implementation("androidx.paging:paging-runtime:$paging_version")
     implementation("androidx.paging:paging-compose:3.3.5")
-
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.0")
 }
