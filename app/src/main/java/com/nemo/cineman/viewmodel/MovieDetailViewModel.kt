@@ -5,16 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.nemo.cineman.api.MovieRepository
 import com.nemo.cineman.api.UserRepository
 import com.nemo.cineman.entity.DetailMovie
 import com.nemo.cineman.entity.Genre
 import com.nemo.cineman.entity.Movie
+import com.nemo.cineman.entity.MovieList
 import com.nemo.cineman.entity.ProductionCompany
 import com.nemo.cineman.entity.ProductionCountry
 import com.nemo.cineman.entity.SpokenLanguage
 import com.nemo.cineman.entity.VideoResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -47,6 +51,9 @@ class MovieDetailViewModel  @Inject constructor(
 
     private val _ratedValue = MutableLiveData<Double>(0.0)
     val ratedValue: LiveData<Double> get() = _ratedValue
+
+    private val _isRated = MutableLiveData<Boolean>(false)
+    val isRated: LiveData<Boolean> get() = _isRated
 
     private val _message = MutableLiveData<String>(null)
     val message : LiveData<String> get() = _message
@@ -104,7 +111,12 @@ class MovieDetailViewModel  @Inject constructor(
             result.onSuccess { accountResponseState ->
                 _isFavourite.value = accountResponseState.favorite
                 _isWatchlist.value = accountResponseState.watchlist
-                _ratedValue.value = accountResponseState.rated.value
+                if (accountResponseState.rated == null){
+                    _isRated.value = false
+                } else {
+                    _isRated.value = true
+                    _ratedValue.value = accountResponseState.rated.value
+                }
             }.onFailure { exception ->
                 Log.e("MyLog", "Failed to fetch account state: ${exception.message}")
             }
@@ -183,5 +195,10 @@ class MovieDetailViewModel  @Inject constructor(
             }
         }
     }
+
+    fun getUserList() : Flow<PagingData<MovieList>>{
+        return userRepository.getAccountList().cachedIn(viewModelScope)
+    }
+
 
 }

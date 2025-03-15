@@ -30,8 +30,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.FeaturedPlayList
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FeaturedPlayList
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
@@ -43,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -69,6 +74,7 @@ import androidx.compose.ui.window.Popup
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.nemo.cineman.R
 import com.nemo.cineman.entity.RatingBar
@@ -87,6 +93,11 @@ fun DetailMovieScreen(
     val isWatchlist by movieDetailViewModel.isWatchlist.observeAsState(false)
     val isFavourite by movieDetailViewModel.isFavourite.observeAsState(false)
     val ratedValue by movieDetailViewModel.ratedValue.observeAsState(0.0)
+    val isRated by movieDetailViewModel.isRated.observeAsState()
+    var isDialogOpen by remember {
+        mutableStateOf(false)
+    }
+    val movieList = movieDetailViewModel.getUserList().collectAsLazyPagingItems()
 
 
     LaunchedEffect(Unit) {
@@ -145,6 +156,7 @@ fun DetailMovieScreen(
                         ratedValue,
                         { movieDetailViewModel.toggleMovieToFavourite(movieId) },
                         { movieDetailViewModel.toggleMovieToWatchlist(movieId) },
+                        {isDialogOpen = !isDialogOpen},
                         { ratingValue ->
                             movieDetailViewModel.updateRating(movieId, ratingValue)
                         },
@@ -249,6 +261,9 @@ fun DetailMovieScreen(
                 )
             }
         }
+        if(isDialogOpen){
+            UserListDialog(movieLists = movieList, {isDialogOpen = !isDialogOpen}, {}, {})
+        }
     }
 
 }
@@ -261,6 +276,7 @@ fun ActionButtonsRow(
     ratedValue: Double,
     onFavouriteClick: () -> Unit,
     onMarkClick: () -> Unit,
+    onAddToList: () -> Unit,
     onRateClick: (Double) -> Unit,
     url: String
 ) {
@@ -311,10 +327,27 @@ fun ActionButtonsRow(
                 )
         ) {
             Icon(
-                imageVector = Icons.Default.Check,
+                imageVector = Icons.AutoMirrored.Filled.List,
                 contentDescription = "Mark",
                 modifier = Modifier.size(24.dp),
                 tint = if (isWatchlist) Color.Yellow else Color.White
+            )
+        }
+        IconButton(
+            onClick = onAddToList,
+            modifier = Modifier
+                .padding(4.dp)
+                .border(
+                    1.dp,
+                    Color.White,
+                    RoundedCornerShape(30.dp)
+                )
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.FeaturedPlayList,
+                contentDescription = "Add to playlist",
+                modifier = Modifier.size(24.dp),
+                tint = Color.White
             )
         }
         RatingButton(ratedValue = ratedValue, onRateClick)
@@ -337,7 +370,7 @@ fun ActionButtonsRow(
 
 @Composable
 fun RatingButton(ratedValue: Double, updateRating: (Double) -> Unit) {
-    var ratedV by remember { mutableStateOf(ratedValue) }
+    var ratedV by remember(ratedValue) { mutableStateOf(ratedValue) }
     var isPopupVisible by remember { mutableStateOf(false) }
     val buttonModifier = Modifier
         .padding(4.dp)

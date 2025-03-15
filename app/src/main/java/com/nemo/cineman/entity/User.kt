@@ -1,6 +1,11 @@
 package com.nemo.cineman.entity
 
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
+import java.lang.reflect.Type
 
 data class Account(
     @SerializedName("avatar") val avatar: Avatar,
@@ -46,7 +51,8 @@ data class AccountResponse(
 data class AccountStateResponse(
     @SerializedName("id") val id: Int,
     @SerializedName("favorite") val favorite: Boolean,
-    @SerializedName("rated") val rated: Rated,
+    @JsonAdapter(RatedAdapter::class)
+    @SerializedName("rated") val rated: Rated?,
     @SerializedName("watchlist") val watchlist: Boolean
 )
 
@@ -71,3 +77,18 @@ data class MovieList(
     val name: String,
     val poster_path: String?
 )
+
+class RatedAdapter : JsonDeserializer<Rated?> {
+    override fun deserialize(
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
+    ): Rated? {
+        return when {
+            json == null || json.isJsonNull -> null
+            json.isJsonPrimitive && json.asJsonPrimitive.isBoolean -> null
+            json.isJsonObject -> context?.deserialize(json, Rated::class.java)
+            else -> null
+        }
+    }
+}
