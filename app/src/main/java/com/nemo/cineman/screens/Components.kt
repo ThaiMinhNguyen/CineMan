@@ -139,12 +139,10 @@ fun PreviewAlertDialogExample() {
 @Composable
 fun MovieCard(movie: Movie, navController: NavController) {
     Card(
-//        onClick = rememberNavController().navigate(DetailMovieScreen()),
         modifier = Modifier
             .width(380.dp)
             .height(150.dp)
             .padding(vertical = 8.dp)
-//            .clickable { navController.navigate("menu") },
             .clickable {
                 navController.navigate("detailMovie/${movie.id}") {
 
@@ -343,7 +341,11 @@ fun DefaultBottomBar(navController: NavController){
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
         }
         IconButton(
-            onClick = { navController.navigate("accountDetail") },
+            onClick = {
+                navController.navigate("accountDetail"){
+                    launchSingleTop = true
+                }
+            },
             modifier = Modifier.weight(1f)
         ) {
             Icon(imageVector = Icons.Default.Person, contentDescription = "Account")
