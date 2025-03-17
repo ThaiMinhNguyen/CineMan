@@ -115,7 +115,9 @@ fun LoginForm(
     }
     val icon = Icons.Default.Info // Example icon
 
-
+    LaunchedEffect(Unit) {
+        viewModel.initApplication()
+    }
 
     if (navigationEvent != null) {
         LaunchedEffect(navigationEvent) {

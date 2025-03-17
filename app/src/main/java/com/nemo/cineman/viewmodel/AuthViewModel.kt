@@ -34,6 +34,16 @@ class AuthViewModel @Inject constructor(
         _error.value = null
     }
 
+    fun initApplication(){
+        viewModelScope.launch {
+            _isLoading.value = true
+            if(!sharedPreferenceManager.isSessionExpired()){
+                _navigationEvent.value = "menu"
+            }
+            _isLoading.value = false
+        }
+    }
+
     suspend fun signInWithGuest(){
         _isLoading.value = true
         try {
