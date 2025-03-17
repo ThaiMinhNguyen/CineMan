@@ -20,7 +20,7 @@ class ListPagingSource(
             val sessionId = sharedPreferenceManager.getSessionId()
 
             val response = if (sessionId != null) {
-                userService.getAccountList(page = null, sessionId)
+                userService.getAccountList(page = page, sessionId)
 
             } else {
                 return LoadResult.Error(IllegalStateException("Invalid session"))

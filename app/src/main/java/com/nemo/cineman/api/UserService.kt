@@ -4,8 +4,11 @@ import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
+import com.nemo.cineman.entity.AddItemRequest
 import com.nemo.cineman.entity.MovieListResponse
 import com.nemo.cineman.entity.Rated
+import com.nemo.cineman.entity.UserMovieList
+import com.nemo.cineman.entity.UserMovieListResponse
 import com.nemo.cineman.entity.VideoResponse
 import com.nemo.cineman.entity.WatchlistBody
 import retrofit2.http.Body
@@ -86,4 +89,25 @@ interface UserService {
         @Query("page") page: Int? = 1,
         @Query("session_id") sessionId: String
     ) : MovieListResponse
+
+
+    @Headers(
+        "accept: application/json"
+    )
+    @POST("list")
+    suspend fun createUserList(
+        @Query("session_id") sessionId: String,
+        @Body userMovieList: UserMovieList
+    ) : UserMovieListResponse
+
+
+    @Headers(
+        "accept: application/json"
+    )
+    @POST("list/{list_id}/add_item")
+    suspend fun addMovieToList(
+        @Path("list_id") listId: Int,
+        @Query("session_id") sessionId: String,
+        @Body addItemRequest: AddItemRequest
+    ) : AccountResponse
 }

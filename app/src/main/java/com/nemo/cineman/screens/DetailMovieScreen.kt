@@ -2,6 +2,7 @@ package com.nemo.cineman.screens
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -98,13 +99,19 @@ fun DetailMovieScreen(
         mutableStateOf(false)
     }
     val movieList = movieDetailViewModel.getUserList().collectAsLazyPagingItems()
-
+    val message by movieDetailViewModel.message.observeAsState()
 
     LaunchedEffect(Unit) {
         movieDetailViewModel.getMovieDetail(movieId)
         movieDetailViewModel.getMovieTrailer(movieId)
         movieDetailViewModel.checkFavourite(movieId)
     }
+
+    if (message != null){
+        Toast.makeText(LocalContext.current, message,Toast.LENGTH_SHORT).show()
+        movieDetailViewModel.onMessageHandled()
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -117,10 +124,9 @@ fun DetailMovieScreen(
                     model = "https://image.tmdb.org/t/p/w500${movie?.backdropPath ?: ""}",
                     contentDescription = "Backdrop Image",
                     contentScale = ContentScale.Crop,
-                    error = painterResource(id = R.drawable.ic_launcher_background) // Hình mặc định nếu lỗi
+                    error = painterResource(id = R.drawable.ic_launcher_background)
                 )
 
-                // Nút quay lại
                 IconButton(
                     onClick = { navController.popBackStack() },
                     modifier = Modifier
@@ -138,7 +144,7 @@ fun DetailMovieScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = 250.dp)
-                        .background(Color.Black.copy(alpha = 0.8f)) // Tạo nền mờ
+                        .background(Color.Black.copy(alpha = 0.8f))
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -169,7 +175,6 @@ fun DetailMovieScreen(
                         color = Color.Gray
                     )
 
-                    // Thể loại phim
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(movie?.genres?.count() ?: 0) { index ->
                             Text(
@@ -182,7 +187,7 @@ fun DetailMovieScreen(
                         }
                     }
 
-                    // Nội dung phim
+
                     Text(
                         text = movie?.overview ?: "No description available.",
                         style = MaterialTheme.typography.bodyMedium,
@@ -262,7 +267,16 @@ fun DetailMovieScreen(
             }
         }
         if(isDialogOpen){
-            UserListDialog(movieLists = movieList, {isDialogOpen = !isDialogOpen}, {}, {})
+            UserListDialog(
+                movieLists = movieList,
+                {isDialogOpen = !isDialogOpen},
+                {  listId ->
+                    movieDetailViewModel.addMovieToList(movieId, listId)
+                },
+                { name, description, language ->
+                    movieDetailViewModel.createUserList(name, description, language)
+                }
+            )
         }
     }
 

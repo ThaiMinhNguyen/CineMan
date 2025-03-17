@@ -10,12 +10,9 @@ import androidx.paging.cachedIn
 import com.nemo.cineman.api.MovieRepository
 import com.nemo.cineman.api.UserRepository
 import com.nemo.cineman.entity.DetailMovie
-import com.nemo.cineman.entity.Genre
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieList
-import com.nemo.cineman.entity.ProductionCompany
-import com.nemo.cineman.entity.ProductionCountry
-import com.nemo.cineman.entity.SpokenLanguage
+import com.nemo.cineman.entity.UserMovieList
 import com.nemo.cineman.entity.VideoResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -55,9 +52,13 @@ class MovieDetailViewModel  @Inject constructor(
     private val _isRated = MutableLiveData<Boolean>(false)
     val isRated: LiveData<Boolean> get() = _isRated
 
-    private val _message = MutableLiveData<String>(null)
-    val message : LiveData<String> get() = _message
+    private val _message = MutableLiveData<String?>(null)
+    val message : LiveData<String?> get() = _message
 
+
+    fun onMessageHandled(){
+        _message.value = null
+    }
 
     fun getMovieDetail(id: Int){
         viewModelScope.launch {
@@ -200,5 +201,33 @@ class MovieDetailViewModel  @Inject constructor(
         return userRepository.getAccountList().cachedIn(viewModelScope)
     }
 
+    fun createUserList(name: String, description: String, language: String){
+        val userMovieList = UserMovieList(name, description, language)
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = userRepository.createUserList(userMovieList)
+            result.onSuccess { response ->
+                _message.value = response.status_message
+                Log.e("MyLog", "Create new list: ${response.list_id}")
+            }.onFailure { exception ->
+                Log.e("MyLog", "Failed to create new list: ${exception.message}")
+            }
+            _isLoading.value = false
+        }
+    }
 
+    fun addMovieToList(movieId: Int, listId: Int){
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = userRepository.addMovieToList(listId, movieId)
+            result.onSuccess { response ->
+                _message.value = response.statusMessage
+                Log.e("MyLog", "Create new list: ${response.statusMessage}")
+            }.onFailure { exception ->
+                _message.value = "FAILED: ${exception.message}"
+                Log.e("MyLog", "Failed to create new list: ${exception.localizedMessage}")
+            }
+            _isLoading.value = false
+        }
+    }
 }

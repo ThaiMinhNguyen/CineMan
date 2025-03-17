@@ -40,13 +40,20 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -381,9 +388,12 @@ fun YouTubePlayer(videoKey: String) {
 fun UserListDialog(
     movieLists: LazyPagingItems<MovieList>,
     onDismiss: () -> Unit,
-    onListSelected: (MovieList) -> Unit,
-    onCreateNewList: () -> Unit
+    onListSelected: (Int) -> Unit,
+    onCreateNewList: (String, String, String) -> Unit
 ) {
+    var isCreateDialogOpen by remember {
+        mutableStateOf(false)
+    }
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -420,22 +430,27 @@ fun UserListDialog(
                         .heightIn(max = 400.dp)
                 ) {
                     LazyColumn(
+                        modifier = Modifier.padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
+
                     ) {
                         items(movieLists.itemCount) { index ->
                             movieLists[index]?.let { movieList ->
-                                Modifier
-                                    .fillMaxWidth()
                                 Card(
-                                    modifier = Modifier.animateItem(
-                                        fadeInSpec = null,
-                                        fadeOutSpec = null
-                                    ),
-                                    elevation = CardDefaults.cardElevation(
-                                        defaultElevation = 10.dp
-                                    ),
+                                    modifier = Modifier
+                                        .animateItem(
+                                            fadeInSpec = null,
+                                            fadeOutSpec = null
+                                        )
+                                        .fillMaxWidth(),
                                     shape = RoundedCornerShape(12.dp),
-                                    onClick = { onListSelected(movieList) }
+                                    onClick = {
+                                        onListSelected(movieList.id)
+                                        onDismiss()
+                                    },
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.surface
+                                    )
                                 ) {
                                     Row(
                                         modifier = Modifier
@@ -448,23 +463,26 @@ fun UserListDialog(
                                         ) {
                                             Text(
                                                 text = movieList.name,
-                                                style = MaterialTheme.typography.bodyMedium,
+                                                style = MaterialTheme.typography.bodyLarge,
                                                 fontWeight = FontWeight.Medium
                                             )
                                             Text(
                                                 text = movieList.description,
-                                                style = MaterialTheme.typography.bodySmall,
+                                                style = MaterialTheme.typography.bodyMedium,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 maxLines = 2,
                                                 overflow = TextOverflow.Ellipsis
                                             )
                                         }
-                                        Icon(
-                                            imageVector = Icons.Default.ChevronRight,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary
-                                        )
                                     }
+                                }
+                                if (index < movieLists.itemCount - 1) {
+                                    HorizontalDivider(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        thickness = 1.dp,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f) // Màu tùy chỉnh
+                                    )
                                 }
                             }
                         }
@@ -512,7 +530,7 @@ fun UserListDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = onCreateNewList,
+                    onClick = { isCreateDialogOpen = !isCreateDialogOpen },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
@@ -540,6 +558,75 @@ fun UserListDialog(
                 }
             }
         }
+        if(isCreateDialogOpen){
+            CreateListDialog(
+                onDismiss = {isCreateDialogOpen = !isCreateDialogOpen},
+                onCreateRequest = { name, description, language ->
+                    onCreateNewList(name, description, language)
+                }
+            )
+        }
     }
 }
 
+@Composable
+fun CreateListDialog(
+    onDismiss: () -> Unit,
+    onCreateRequest: (String, String, String) -> Unit,
+){
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnClickOutside = true,
+            dismissOnBackPress = true
+        )
+    ) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                var name by remember { mutableStateOf("") }
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                var description by remember { mutableStateOf("") }
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Description") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+
+                var language by remember { mutableStateOf("") }
+                OutlinedTextField(
+                    value = language,
+                    onValueChange = { language = it },
+                    label = { Text("Language") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Button(
+                    onClick = {
+                        onCreateRequest(name, description, language)
+                        onDismiss()
+                    },
+                    modifier = Modifier
+                        .align(Alignment.End)
+                ) {
+                    Text("Create")
+                }
+            }
+        }
+    }
+}

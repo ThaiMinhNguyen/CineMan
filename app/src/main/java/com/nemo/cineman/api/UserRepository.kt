@@ -8,11 +8,13 @@ import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
+import com.nemo.cineman.entity.AddItemRequest
 import com.nemo.cineman.entity.ListPagingSource
 import com.nemo.cineman.entity.MovieList
 import com.nemo.cineman.entity.Rated
-import com.nemo.cineman.entity.SearchMoviePagingSource
 import com.nemo.cineman.entity.SharedPreferenceManager
+import com.nemo.cineman.entity.UserMovieList
+import com.nemo.cineman.entity.UserMovieListResponse
 import com.nemo.cineman.entity.WatchlistBody
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -143,9 +145,38 @@ class UserRepository @Inject constructor (
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
-                enablePlaceholders = false
+                enablePlaceholders = true
             ),
             pagingSourceFactory = { ListPagingSource(userService, sharedPreferenceManager) }
         ).flow
+    }
+
+    suspend fun createUserList(userMovieList: UserMovieList) : Result<UserMovieListResponse>{
+        return try {
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            val response = if (savedSessionId != null){
+                userService.createUserList(savedSessionId, userMovieList)
+            } else {
+                return Result.failure(IllegalStateException("No valid session found"))
+            }
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun addMovieToList(listId: Int, movieId: Int) : Result<AccountResponse> {
+        return try {
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            val response = if (savedSessionId != null){
+                val addItemRequest = AddItemRequest(movieId)
+                userService.addMovieToList(listId, savedSessionId, addItemRequest)
+            } else {
+                return Result.failure(IllegalStateException("No valid session found"))
+            }
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
     }
 }

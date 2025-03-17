@@ -92,3 +92,20 @@ class RatedAdapter : JsonDeserializer<Rated?> {
         }
     }
 }
+
+data class UserMovieList(
+    val name: String,
+    val description: String,
+    val language: String
+)
+
+data class UserMovieListResponse(
+    val status_message: String,
+    val success: Boolean,
+    val status_code: Int,
+    val list_id: Int
+)
+
+data class AddItemRequest(
+    @SerializedName("media_id") val mediaId: Int
+)
