@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nemo.cineman.entity.ListType
+import com.nemo.cineman.ui.theme.heavyTitle
 import com.nemo.cineman.viewmodel.MainViewModel
 
 
@@ -90,13 +91,18 @@ fun MenuScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
                 title = {
-                    Text(text = "Menu")
+                    Text(
+                        text = "Menu",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontFamily = heavyTitle
+                    )
                 },
                 actions = {
                     IconButton(onClick = { isExpanded = true }) {
                         Icon(
                             imageVector = Icons.Filled.MoreVert,
-                            contentDescription = "Menu trailing icon"
+                            contentDescription = "Menu trailing icon",
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                     DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {

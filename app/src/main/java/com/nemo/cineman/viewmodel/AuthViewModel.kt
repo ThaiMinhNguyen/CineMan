@@ -37,6 +37,7 @@ class AuthViewModel @Inject constructor(
     fun initApplication(){
         viewModelScope.launch {
             _isLoading.value = true
+            Log.d("MyLog", "Init App")
             if(!sharedPreferenceManager.isSessionExpired()){
                 _navigationEvent.value = "menu"
             }

@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CineManTheme {
-                Box(Modifier.safeDrawingPadding()) {
+                Box() {
                    val navController = rememberNavController()
                     NavHost(
                         navController = navController,
@@ -52,11 +52,11 @@ class MainActivity : ComponentActivity() {
                             route = "webview/{url}",
                             arguments = listOf(
                                 navArgument("url") {
-                                    type = NavType.StringType  // Định nghĩa tham số là String
+                                    type = NavType.StringType
                                 }
                             )
                         ) { backStackEntry ->
-                            // Lấy tham số URL từ arguments
+
                             val url = backStackEntry.arguments?.getString("url") ?: "https://www.google.com"  // Nếu URL rỗng hoặc null, dùng Google
                             val decodedUrl = Uri.decode(url)
                             WebViewScreen(url = decodedUrl, navController)
