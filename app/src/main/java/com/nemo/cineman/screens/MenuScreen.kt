@@ -85,46 +85,12 @@ fun MenuScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-                title = {
-                    Text(
-                        text = "Menu",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontFamily = heavyTitle
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { isExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Filled.MoreVert,
-                            contentDescription = "Menu trailing icon",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                    DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
-                        DropdownMenuItem(
-                            text = { Text("Account") },
-                            onClick = {
-                                isExpanded = false
-                                navController.navigate("accountDetail")
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Log out") },
-                            onClick = {
-                                Log.d("MyLog", "Log out pressed")
-                                logOut()
-                                isExpanded = false
-
-                            }
-                        )
-                    }
-                }
-            )
+            MenuTopAppBar(
+                title = "Menu",
+                navController = navController,
+                isExpanded = isExpanded,
+                onExpandedChange = { isExpanded = it },
+                onLogOut = { logOut()})
         },
         bottomBar = {
             DefaultBottomBar(navController)

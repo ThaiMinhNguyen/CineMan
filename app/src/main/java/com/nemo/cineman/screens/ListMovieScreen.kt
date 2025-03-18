@@ -43,7 +43,7 @@ fun ListMovieScreen(
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.Black,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 ),
                 title = {
                     Text(
@@ -61,47 +61,10 @@ fun ListMovieScreen(
                         )
                     }
                 },
-                actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Menu trailing icon"
-                        )
-                    }
-                }
             )
         },
         bottomBar = {
-            BottomAppBar {
-                IconButton(
-                    onClick = {
-                        navController.navigate("menu") {
-                            launchSingleTop = true
-                        }
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-                }
-                IconButton(
-                    onClick = { /* Handle Home action */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "Home")
-                }
-                IconButton(
-                    onClick = { /* Handle Home action */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = "Home")
-                }
-                IconButton(
-                    onClick = { /* Handle Home action */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
-                }
-            }
+            DefaultBottomBar(navController = navController)
         },
         content = { paddingValues ->
             Box(modifier = Modifier.padding(paddingValues)) {

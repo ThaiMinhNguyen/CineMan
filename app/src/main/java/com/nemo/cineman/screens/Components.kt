@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -41,6 +42,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,6 +53,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,6 +86,7 @@ import coil.compose.AsyncImage
 import com.nemo.cineman.R
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieList
+import com.nemo.cineman.ui.theme.heavyTitle
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -324,9 +331,64 @@ fun TitleTypePreview(){
     TitleType(type = "Now Playing", rememberNavController())
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuTopAppBar(
+    title: String,
+    navController: NavController,
+    isExpanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    onLogOut: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        ),
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineLarge,
+                fontFamily = heavyTitle
+            )
+        },
+        actions = {
+            IconButton(onClick = { onExpandedChange(true) }) {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "Menu trailing icon",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+            DropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { onExpandedChange(false) }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Account") },
+                    onClick = {
+                        onExpandedChange(false)
+                        navController.navigate("accountDetail")
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Log out") },
+                    onClick = {
+                        Log.d("MyLog", "Log out pressed")
+                        onLogOut()
+                        onExpandedChange(false)
+                    }
+                )
+            }
+        },
+        modifier = modifier
+    )
+}
+
 @Composable
 fun DefaultBottomBar(navController: NavController){
-    BottomAppBar(contentColor = Color.White, containerColor = MaterialTheme.colorScheme.primary) {
+    BottomAppBar(contentColor = MaterialTheme.colorScheme.onPrimaryContainer, containerColor = MaterialTheme.colorScheme.primaryContainer) {
         IconButton(
             onClick = {
                 navController.navigate("menu") {
