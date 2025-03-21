@@ -112,10 +112,18 @@ fun DetailMovieScreen(
         movieDetailViewModel.onMessageHandled()
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.8f))
+    ) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .fillMaxHeight()
+        ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
                 // Ảnh nền (Backdrop)
                 AsyncImage(
                     modifier = Modifier
@@ -130,7 +138,7 @@ fun DetailMovieScreen(
                 IconButton(
                     onClick = { navController.popBackStack() },
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp, vertical = 35.dp)
                         .background(Color.Black.copy(alpha = 0.5f), shape = CircleShape)
                 ) {
                     Icon(
@@ -139,12 +147,10 @@ fun DetailMovieScreen(
                         tint = Color.White
                     )
                 }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = 250.dp)
-                        .background(Color.Black.copy(alpha = 0.8f))
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -279,7 +285,6 @@ fun DetailMovieScreen(
             )
         }
     }
-
 }
 
 
@@ -434,4 +439,3 @@ fun RatingButton(ratedValue: Double, updateRating: (Double) -> Unit) {
         }
     }
 }
-
