@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import com.nemo.cineman.screens.ListMovieScreen
 import com.nemo.cineman.screens.WebViewScreen
 import com.nemo.cineman.screens.LoginScreen
 import com.nemo.cineman.screens.MenuScreen
+import com.nemo.cineman.screens.PlaylistScreen
 import com.nemo.cineman.screens.SearchScreen
 import com.nemo.cineman.ui.theme.CineManTheme
 import com.nemo.cineman.ui.theme.playwrite
@@ -100,6 +102,11 @@ class MainActivity : ComponentActivity() {
                             route = "accountDetail"
                         ) { 
                             AccountDetailScreen(navController = navController)
+                        }
+                        composable(
+                            route = "playlist"
+                        ) {
+                            PlaylistScreen(navController = navController)
                         }
                     }
                 }

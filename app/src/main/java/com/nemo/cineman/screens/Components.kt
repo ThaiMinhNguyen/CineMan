@@ -24,11 +24,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -420,10 +422,14 @@ fun DefaultBottomBar(navController: NavController){
             Icon(imageVector = Icons.Default.Person, contentDescription = "Account")
         }
         IconButton(
-            onClick = { /* Handle Home action */ },
+            onClick = { 
+                navController.navigate("playlist"){
+                    launchSingleTop = true
+                }
+             },
             modifier = Modifier.weight(1f)
         ) {
-            Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+            Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "Playlist")
         }
     }
 }
