@@ -2,7 +2,6 @@ package com.nemo.cineman.entity
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.nemo.cineman.api.UserRepository
 import com.nemo.cineman.api.UserService
 
 class ListPagingSource(
