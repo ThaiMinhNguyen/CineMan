@@ -8,8 +8,10 @@ import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
-import com.nemo.cineman.entity.AddItemRequest
+import com.nemo.cineman.entity.ChangeItemRequest
+import com.nemo.cineman.entity.ListMoviePagingSource
 import com.nemo.cineman.entity.ListPagingSource
+import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieList
 import com.nemo.cineman.entity.Rated
 import com.nemo.cineman.entity.SharedPreferenceManager
@@ -169,7 +171,7 @@ class UserRepository @Inject constructor (
         return try {
             val savedSessionId = sharedPreferenceManager.getSessionId()
             val response = if (savedSessionId != null){
-                val addItemRequest = AddItemRequest(movieId)
+                val addItemRequest = ChangeItemRequest(movieId)
                 userService.addMovieToList(listId, savedSessionId, addItemRequest)
             } else {
                 return Result.failure(IllegalStateException("No valid session found"))
@@ -179,4 +181,32 @@ class UserRepository @Inject constructor (
             Result.failure(e)
         }
     }
+
+    suspend fun getListName(listId: Int) : Result<String>{
+        return try {
+            val response = userService.getMoviesFromList(listId)
+            return Result.success(response.name)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+   
+    fun getMoviesFromList(listId: Int, language: String = "en-US", sortBy: String? = null): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                maxSize = 100
+            ),
+            pagingSourceFactory = { 
+                ListMoviePagingSource(
+                    userService = userService,
+                    listId = listId,
+                    language = language,
+                    sortBy = sortBy
+                ) 
+            }
+        ).flow
+    }
+    
 }
