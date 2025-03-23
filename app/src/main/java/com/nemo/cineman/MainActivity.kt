@@ -3,15 +3,15 @@ package com.nemo.cineman
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -22,11 +22,12 @@ import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.screens.AccountDetailScreen
 import com.nemo.cineman.screens.DetailMovieScreen
 import com.nemo.cineman.screens.ListMovieScreen
-import com.nemo.cineman.screens.WebViewScreen
 import com.nemo.cineman.screens.LoginScreen
 import com.nemo.cineman.screens.MenuScreen
 import com.nemo.cineman.screens.PlaylistScreen
 import com.nemo.cineman.screens.SearchScreen
+import com.nemo.cineman.screens.UserListMovieScreen
+import com.nemo.cineman.screens.WebViewScreen
 import com.nemo.cineman.ui.theme.CineManTheme
 import com.nemo.cineman.ui.theme.playwrite
 import dagger.hilt.android.AndroidEntryPoint
@@ -107,6 +108,23 @@ class MainActivity : ComponentActivity() {
                             route = "playlist"
                         ) {
                             PlaylistScreen(navController = navController)
+                        }
+                        composable(
+                            route = "playlist/{listId}",
+                            arguments = listOf(
+                                navArgument("listId") {
+                                    type = NavType.IntType
+                                }
+                            )
+                        ) { backStackEntry ->
+                            val listId = backStackEntry.arguments?.getInt("listId")
+                            if (listId != null) {
+                                UserListMovieScreen(navController = navController, listId = listId)
+                                Log.d("MyLog", "navigated to playlist: $listId")
+                            } else {
+                                Log.e("MyLog", "listId is null")
+                                Toast.makeText(LocalContext.current, "listId is null", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
