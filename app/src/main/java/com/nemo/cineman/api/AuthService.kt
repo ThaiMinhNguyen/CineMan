@@ -18,27 +18,27 @@ interface AuthService {
     @Headers(
         "accept: application/json"
     )
-    @GET("authentication/token/new")
+    @GET("3/authentication/token/new")
     fun getRequestToken(
     ): Call<RequestTokenResponse>
 
     @Headers(
         "accept: application/json"
     )
-    @GET("authentication/guest_session/new")
+    @GET("3/authentication/guest_session/new")
     suspend fun getGuestSession(
     ) : GuestSessionResponse
 
     @Headers(
         "accept: application/json"
     )
-    @POST("authentication/session/new")
+    @POST("3/authentication/session/new")
     suspend fun getNewSession(@Body requestTokenBody: RequestTokenBody) : SessionResponse
 
     @Headers(
         "accept: application/json"
     )
-    @POST("authentication/token/validate_with_login")
+    @POST("3/authentication/token/validate_with_login")
     suspend fun getNewSessionWithLogin(@Body requestTokenBody: UsernamePasswordBody) : SessionResponse
 
 }
