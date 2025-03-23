@@ -106,6 +106,18 @@ data class UserMovieListResponse(
     val list_id: Int
 )
 
-data class AddItemRequest(
+data class ChangeItemRequest(
     @SerializedName("media_id") val mediaId: Int
+)
+
+data class UserDetailListResponse(
+    val created_by: String,
+    val description: String,
+    val favorite_count: Int,
+    val id: String,
+    val items: List<Movie>,
+    val name: String,
+    val page: Int = 1,
+    @SerializedName("total_pages") val total_pages: Int = 1,
+    @SerializedName("total_results") val total_results: Int = 0
 )
