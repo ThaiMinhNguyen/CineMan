@@ -45,7 +45,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient) : Retrofit = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/").client(client).addConverterFactory(GsonConverterFactory.create()).build()
+    fun provideRetrofit(client: OkHttpClient) : Retrofit = Retrofit.Builder().baseUrl("https://api.themoviedb.org/").client(client).addConverterFactory(GsonConverterFactory.create()).build()
 
     @Provides
     @Singleton
