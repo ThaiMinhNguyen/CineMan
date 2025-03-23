@@ -46,13 +46,15 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.nemo.cineman.viewmodel.MainViewModel
 import com.nemo.cineman.viewmodel.MovieDetailViewModel
+import com.nemo.cineman.viewmodel.MovieListViewModel
 
 
 @Composable
 fun PlaylistScreen(
     navController: NavController,
     movieDetailViewModel: MovieDetailViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    userMovieListViewModel: MovieListViewModel = hiltViewModel()
     ){
 
     var isExpanded by remember{ mutableStateOf(false) }
@@ -100,7 +102,12 @@ fun PlaylistScreen(
                                     color = MaterialTheme.colorScheme.outlineVariant,
                                     shape = RoundedCornerShape(12.dp)
                                 )
-                                .clickable { /*TODO*/ },
+                                .clickable {
+                                    userMovieListViewModel.setListId(movieList[index]?.id ?: 0)
+                                    navController.navigate("playlist/${movieList[index]?.id}"){
+                                        launchSingleTop = true
+                                    }
+                                 },
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surface,
                                 contentColor = MaterialTheme.colorScheme.onSurface
