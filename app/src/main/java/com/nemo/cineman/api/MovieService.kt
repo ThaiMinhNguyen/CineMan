@@ -19,7 +19,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("movie/now_playing")
+    @GET("3/movie/now_playing")
     suspend fun getNowPlayingMovies(
         @Query("language") language: String? = "en-US",
         @Query("page") page: Int? = 1
@@ -29,7 +29,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("movie/popular")
+    @GET("3/movie/popular")
     suspend fun getPopularMovies(
         @Query("language") language: String? = "en-US",
         @Query("page") page: Int? = 1
@@ -39,7 +39,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("movie/top_rated")
+    @GET("3/movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("language") language:  String? = "en-US",
         @Query("page") page: Int? = 1
@@ -49,7 +49,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("movie/upcoming")
+    @GET("3/movie/upcoming")
     suspend fun getUpComingMovies(
         @Query("language") language: String? = "en-US",
         @Query("page") page: Int? = 1
@@ -59,7 +59,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("search/movie")
+    @GET("3/search/movie")
     suspend fun searchMoviesByTitle(
         @Query("query") query: String,
         @Query("language") language: String? = "en-US",
@@ -73,7 +73,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("movie/{movie_id}")
+    @GET("3/movie/{movie_id}")
     suspend fun getMovieDetail(
         @Path("movie_id") movieId: Int
     ): DetailMovie
@@ -82,7 +82,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("movie/{movie_id}/release_dates")
+    @GET("3/movie/{movie_id}/release_dates")
     fun getMovieCert(
         @Path("movie_id") movieId: Int
     ): Call<MovieCertification>
@@ -90,7 +90,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("movie/{movie_id}/similar")
+    @GET("3/movie/{movie_id}/similar")
     fun getSimilarMovie(
         @Path("movie_id") movieId: Int,
         @Query("page") page: Int
@@ -100,7 +100,7 @@ interface MovieService {
     @Headers(
         "accept: application/json"
     )
-    @GET("movie/{movie_id}/videos")
+    @GET("3/movie/{movie_id}/videos")
     suspend fun getMovieTrailer(
         @Path("movie_id") movieId: Int
     ) : VideoResponse
