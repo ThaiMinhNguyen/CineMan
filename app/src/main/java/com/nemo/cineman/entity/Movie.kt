@@ -17,6 +17,7 @@ data class Movie(
     val genre_ids: List<Int>,
     @PrimaryKey
     val id: Int,
+    val media_type: String?,
     val original_language: String,
     val original_title: String,
     val overview: String,
