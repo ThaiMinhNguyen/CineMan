@@ -209,4 +209,60 @@ class UserRepository @Inject constructor (
         ).flow
     }
     
+    suspend fun deleteList(listId: Int) : Result<AccountResponse>{
+        return try {
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            val response = if(savedSessionId != null){
+                userService.deleteList(listId, savedSessionId)
+            } else {
+                return Result.failure(IllegalStateException("No valid session found"))
+            }
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateList(listId: Int, userMovieList: UserMovieList) : Result<AccountResponse>{
+        return try {
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            val response = if(savedSessionId != null){
+                userService.updateList(listId, savedSessionId, userMovieList)
+            } else {
+                return Result.failure(IllegalStateException("No valid session found"))
+            }
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun clearListItems(listId: Int) : Result<AccountResponse>{
+        return try {
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            val response = if(savedSessionId != null){
+                userService.clearListItems(listId, savedSessionId, true)
+            } else {
+                return Result.failure(IllegalStateException("No valid session found"))
+            }
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun removeMovieFromList(listId: Int, movieId: Int) : Result<AccountResponse>{
+        return try {
+            val savedSessionId = sharedPreferenceManager.getSessionId()
+            val response = if(savedSessionId != null){
+                val removeItemRequest = ChangeItemRequest(movieId)
+                userService.removeMovieFromList(listId, savedSessionId, removeItemRequest)
+            } else {
+                return Result.failure(IllegalStateException("No valid session found"))
+            }
+            Result.success(response)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
 }

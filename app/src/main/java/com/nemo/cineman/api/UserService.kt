@@ -153,4 +153,14 @@ interface UserService {
         @Query("session_id") sessionId: String,
         @Body userMovieList: UserMovieList
     ) : AccountResponse
+
+    @Headers(
+        "accept: application/json"
+    )
+    @GET("3/list/{list_id}/clear")
+    suspend fun clearListItems(
+        @Path("list_id") listId: Int,
+        @Query("session_id") sessionId: String,
+        @Query("confirm") confirm: Boolean
+    ) : AccountResponse
 }
