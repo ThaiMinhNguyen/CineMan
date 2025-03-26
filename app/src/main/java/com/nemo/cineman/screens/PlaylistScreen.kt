@@ -16,9 +16,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -59,6 +61,9 @@ fun PlaylistScreen(
 
     var isExpanded by remember{ mutableStateOf(false) }
     val movieList = movieDetailViewModel.getUserList().collectAsLazyPagingItems()
+    var onConfirm by remember {
+        mutableStateOf(false)
+    }
 
     val logOut = {
         mainViewModel.onLogOutHandled()
@@ -104,10 +109,10 @@ fun PlaylistScreen(
                                 )
                                 .clickable {
                                     userMovieListViewModel.setListId(movieList[index]?.id ?: 0)
-                                    navController.navigate("playlist/${movieList[index]?.id}"){
+                                    navController.navigate("playlist/${movieList[index]?.id}") {
                                         launchSingleTop = true
                                     }
-                                 },
+                                },
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surface,
                                 contentColor = MaterialTheme.colorScheme.onSurface
@@ -154,6 +159,14 @@ fun PlaylistScreen(
                                             onDismissRequest = { showMenu = false }
                                         ) {
                                             DropdownMenuItem(
+                                                text = { Text("Clear") },
+                                                leadingIcon = { Icon(Icons.Default.Clear, contentDescription = "Clear") },
+                                                onClick = {
+                                                    showMenu = false
+                                                    onConfirm = true
+                                                }
+                                            )
+                                            DropdownMenuItem(
                                                 text = { Text("Edit") },
                                                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Edit") },
                                                 onClick = {
@@ -190,6 +203,24 @@ fun PlaylistScreen(
                 ) {
                     Text(text = "Create New List")
                 }
+            }
+            if (onConfirm){
+                AlertDialog(
+                    onDismissRequest = { onConfirm = false },
+                    confirmButton = { /*TODO*/ },
+                    title = {
+                        Text(
+                            text = "Do you want to clear this list?",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = "All movies will be removed from this list and this action cannot be undone.",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                )
             }
         },
         bottomBar = {
