@@ -42,6 +42,9 @@ class MainViewModel @Inject constructor(
     private val _notificationEvent = MutableStateFlow<String?>(null)
     val notificationEvent : StateFlow<String?> = _notificationEvent
 
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading : StateFlow<Boolean> = _isLoading
+
 
     fun onNotificationHandled(){
         _notificationEvent.value = null
@@ -52,64 +55,77 @@ class MainViewModel @Inject constructor(
         Log.d("MyLog", "Wipe out all sharedPreferences/LogOut")
     }
 
-    suspend fun checkSession(){
-        val guestSessionId = sharedPreferenceManager.getGuestSessionId()
-        if (guestSessionId == null) {
-            val sessionId = sharedPreferenceManager.getSessionId()
-            if (sessionId == null) {
-                val token = sharedPreferenceManager.getRequestToken()
-                if (token != null) {
-                    Log.d("MyLog", "checkSession: got request token: $token")
-                    var attempts = 0
-                    val maxRetries = 3
-                    var result: Result<SessionResponse?>? = null
-                    while (attempts < maxRetries) {
-                        result = authRepository.getNewSession(token)
-                        if (result.isSuccess) break
-                        delay(1000 * (attempts + 1).toLong())
-                        attempts++
-                    }
-                    if (result?.isSuccess == true) {
-                        getNowPlayingMovies(1)
-                        getPopularMovies()
-                        val newSession = result.getOrNull()
-                        newSession?.let {
-                            it.sessionId?.let { it1 -> sharedPreferenceManager.saveSession(it1) }
-                            Log.d("MyLog", "checkSession: New session created: ${it.sessionId}")
+    fun checkSession(){
+        viewModelScope.launch {
+            _isLoading.value = true
+            val guestSessionId = sharedPreferenceManager.getGuestSessionId()
+            if (guestSessionId == null) {
+                Log.d("MyLog", "checkSession: Guest session is null")
+                val sessionId = sharedPreferenceManager.getSessionId()
+                if (sessionId == null) {
+                    Log.d("MyLog", "checkSession: Session is null")
+                    val token = sharedPreferenceManager.getRequestToken()
+                    if (token != null) {
+                        Log.d("MyLog", "checkSession: got request token: $token")
+                        var attempts = 0
+                        val maxRetries = 3
+                        var result: Result<SessionResponse?>? = null
+                        while (attempts < maxRetries) {
+                            result = authRepository.getNewSession(token)
+                            if (result.isSuccess) break
+                            delay(1000 * (attempts + 1).toLong())
+                            attempts++
                         }
+                        if (result?.isSuccess == true) {
+                            Log.d("MyLog", "checkSession: Session result is success")
+                            getNowPlayingMovies(1)
+                            getPopularMovies()
+                            val newSession = result.getOrNull()
+                            newSession?.let {
+                                it.sessionId?.let { it1 -> sharedPreferenceManager.saveSession(it1) }
+                                Log.d("MyLog", "checkSession: New session created: ${it.sessionId}")
+                            }
+                        } else {
+                            Log.d("MyLog", "checkSession: Session result is not success")
+                            val exception = result?.exceptionOrNull()
+                            exception?.let {
+                                Log.e(
+                                    "MyLog",
+                                    "checkSession: Error creating session: ${it.message}"
+                                )
+                                //thông báo lỗi cho người dùng
+                                _notificationEvent.value = "Không thể tạo session."
+                            }
+                        }
+
                     } else {
-                        val exception = result?.exceptionOrNull()
-                        exception?.let {
-                            Log.e("MyLog", "checkSession: Error creating session: ${it.message}")
-                            //thông báo lỗi cho người dùng
-                            _notificationEvent.value = "Không thể tạo session."
-                        }
+                        _notificationEvent.value = "Không tìm thấy request token. Vui lòng thử lại."
+                        Log.e("MyLog", "checkSession: Request token is missing")
                     }
 
                 } else {
-                    _notificationEvent.value = "Không tìm thấy request token. Vui lòng thử lại."
-                    Log.e("MyLog", "checkSession: Request token is missing")
+                    Log.d("MyLog", "checkSession: Session is not null")
+                    if (sharedPreferenceManager.isSessionExpired()) {
+                        _notificationEvent.value = "Session hết hạn. Vui lòng đăng nhập lại."
+                        Log.e("MyLog", "checkSession: Session expired")
+                    } else {
+                        getNowPlayingMovies(1)
+                        getPopularMovies()
+                        Log.e("MyLog", "checkSession: Session still valid: $sessionId")
+                    }
                 }
-
             } else {
+                Log.d("MyLog", "checkSession: Guest session is not null")
                 if (sharedPreferenceManager.isSessionExpired()) {
                     _notificationEvent.value = "Session hết hạn. Vui lòng đăng nhập lại."
                     Log.e("MyLog", "checkSession: Session expired")
                 } else {
-                    getNowPlayingMovies(1)
+                    getNowPlayingMovies()
                     getPopularMovies()
-                    Log.e("MyLog", "checkSession: Session still valid: $sessionId")
+                    Log.e("MyLog", "checkSession: Guest Session still valid: $guestSessionId")
                 }
             }
-        } else {
-            if (sharedPreferenceManager.isSessionExpired()) {
-                _notificationEvent.value = "Session hết hạn. Vui lòng đăng nhập lại."
-                Log.e("MyLog", "checkSession: Session expired")
-            } else {
-                getNowPlayingMovies()
-                getPopularMovies()
-                Log.e("MyLog", "checkSession: Guest Session still valid: $guestSessionId")
-            }
+            _isLoading.value = false
         }
     }
 

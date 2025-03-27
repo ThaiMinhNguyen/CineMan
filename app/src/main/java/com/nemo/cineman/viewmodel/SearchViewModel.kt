@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import com.nemo.cineman.api.MovieRepository
 import com.nemo.cineman.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val movieRepository: MovieRepository
@@ -31,7 +33,7 @@ class SearchViewModel @Inject constructor(
 //        return movieRepository.searchMoviesByTitle(_searchText.value).cachedIn(viewModelScope)
 //    }
 
-    //Debounce technique
+    @OptIn(FlowPreview::class)
     fun searchMoviesByTitle(): Flow<PagingData<Movie>> {
         return searchText
             .debounce(2000) // Đợi 2 giây sau lần nhập cuối cùng

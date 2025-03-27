@@ -1,6 +1,7 @@
 package com.nemo.cineman.screens
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +36,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,7 +48,6 @@ import com.nemo.cineman.ui.theme.heavyTitle
 import com.nemo.cineman.viewmodel.MainViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(
     navController: NavController,
@@ -58,12 +60,13 @@ fun MenuScreen(
     val notificationEvent by viewModel.notificationEvent.collectAsState()
     val nowPlayingMovies by viewModel.nowPlayingMovies.observeAsState()
     val popularMovies by viewModel.popularMovies.observeAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     val onDismiss = {
         viewModel.onNotificationHandled()
     }
 
-    var isExpanded by remember{ mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
 
     val logOut = {
         viewModel.onLogOutHandled()
@@ -83,45 +86,51 @@ fun MenuScreen(
     }
     val icon = Icons.Default.Info
 
-    Scaffold(
-        topBar = {
-            MenuTopAppBar(
-                title = "Menu",
-                navController = navController,
-                isExpanded = isExpanded,
-                onExpandedChange = { isExpanded = it },
-                onLogOut = { logOut()})
-        },
-        bottomBar = {
-            DefaultBottomBar(navController)
-        },
-        content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                TitleType(ListType.NowPlaying.name, navController)
-                MovieGrid(movies = nowPlayingMovies ?: emptyList(), navController)
-
-                TitleType(ListType.Popular.name, navController)
-                MovieGrid(movies = popularMovies ?: emptyList(), navController)
-
-                TitleType(ListType.TopRated.name, navController)
-                MovieGrid(movies = popularMovies ?: emptyList(), navController)
-            }
+    if (isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
-    )
+    } else {
+        Scaffold(
+            topBar = {
+                MenuTopAppBar(
+                    title = "Menu",
+                    navController = navController,
+                    isExpanded = isExpanded,
+                    onExpandedChange = { isExpanded = it },
+                    onLogOut = { logOut() })
+            },
+            bottomBar = {
+                DefaultBottomBar(navController)
+            },
+            content = { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    TitleType(ListType.NowPlaying.name, navController)
+                    MovieGrid(movies = nowPlayingMovies ?: emptyList(), navController)
 
-    if (notificationEvent != null) {
-        AlertDialogExample(
-            onDismissRequest = onDismiss,
-            onConfirmation = onConfirm,
-            dialogTitle = "Session Expired",
-            dialogText = notificationEvent!!,
-            icon = icon
+                    TitleType(ListType.Popular.name, navController)
+                    MovieGrid(movies = popularMovies ?: emptyList(), navController)
+
+                    TitleType(ListType.TopRated.name, navController)
+                    MovieGrid(movies = popularMovies ?: emptyList(), navController)
+                }
+            }
         )
+
+        if (notificationEvent != null) {
+            AlertDialogExample(
+                onDismissRequest = onDismiss,
+                onConfirmation = onConfirm,
+                dialogTitle = "Session Expired",
+                dialogText = notificationEvent!!,
+                icon = icon
+            )
+        }
     }
 }
 
