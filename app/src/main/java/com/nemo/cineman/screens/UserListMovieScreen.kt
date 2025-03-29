@@ -45,7 +45,7 @@ fun UserListMovieScreen (
     movieListViewModel: MovieListViewModel = hiltViewModel(),
     listId: Int,
 ) {
-    val movies = movieListViewModel.getMovies().collectAsLazyPagingItems()
+    val movies = movieListViewModel.getMovies(listId).collectAsLazyPagingItems()
     val listName by movieListViewModel.listName.observeAsState("Loading...")
     val currentSortOption by movieListViewModel.sortOption.observeAsState(TMDBSortOptions.POPULARITY_DESC)
     var showSortMenu by remember { mutableStateOf(false) }
