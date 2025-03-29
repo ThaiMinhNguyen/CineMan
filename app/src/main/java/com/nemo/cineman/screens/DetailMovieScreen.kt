@@ -80,13 +80,15 @@ import coil.compose.AsyncImage
 import com.nemo.cineman.R
 import com.nemo.cineman.entity.RatingBar
 import com.nemo.cineman.viewmodel.MovieDetailViewModel
+import com.nemo.cineman.viewmodel.MovieListViewModel
 import kotlin.math.roundToInt
 
 @Composable
 fun DetailMovieScreen(
     movieId: Int,
     navController: NavController,
-    movieDetailViewModel: MovieDetailViewModel = hiltViewModel()
+    movieDetailViewModel: MovieDetailViewModel = hiltViewModel(),
+    movieListViewModel: MovieListViewModel = hiltViewModel(),
 ) {
     val movie by movieDetailViewModel.movie.observeAsState()
     val isLoading by movieDetailViewModel.isLoading.collectAsState(false)
@@ -100,11 +102,16 @@ fun DetailMovieScreen(
     }
     val movieList = movieDetailViewModel.getUserList().collectAsLazyPagingItems()
     val message by movieDetailViewModel.message.observeAsState()
+    var listCreationTrigger by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         movieDetailViewModel.getMovieDetail(movieId)
         movieDetailViewModel.getMovieTrailer(movieId)
         movieDetailViewModel.checkFavourite(movieId)
+    }
+
+    LaunchedEffect(listCreationTrigger) {
+        movieList.refresh()
     }
 
     if (message != null){
@@ -280,7 +287,8 @@ fun DetailMovieScreen(
                     movieDetailViewModel.addMovieToList(movieId, listId)
                 },
                 { name, description, language ->
-                    movieDetailViewModel.createUserList(name, description, language)
+                    movieListViewModel.createUserList(name, description, language)
+                    listCreationTrigger++
                 }
             )
         }
