@@ -247,6 +247,7 @@ class UserRepository @Inject constructor (
             }
             Result.success(response)
         } catch (e: Exception){
+            Log.d("MyLog", "Error clearing list: ${e.message}")
             Result.failure(e)
         }
     }
