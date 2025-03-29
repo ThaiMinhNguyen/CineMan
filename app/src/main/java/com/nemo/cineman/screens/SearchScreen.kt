@@ -40,7 +40,9 @@ fun SearchScreen (navController: NavController, searchViewModel: SearchViewModel
     val movies = searchViewModel.searchMoviesByTitle().collectAsLazyPagingItems()
 
     Scaffold (
-        topBar = { SearchTextField(query = searchText, onQueryChange = {searchViewModel.onTextChange(it)}) },
+        topBar = { Box(modifier = Modifier.padding(top = 30.dp)) {
+            SearchTextField(query = searchText, onQueryChange = {searchViewModel.onTextChange(it)})
+        } },
         content = { paddingValues ->
             Box(
                 modifier = Modifier
@@ -71,7 +73,7 @@ fun SearchTextField(
             .padding(8.dp)
             .height(56.dp)
             .background(Color.Gray.copy(alpha = 0.2f), shape = RoundedCornerShape(24.dp)),
-        shape = RoundedCornerShape(24.dp), // Bo tròn
+        shape = RoundedCornerShape(24.dp),
         singleLine = true,
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
@@ -79,7 +81,9 @@ fun SearchTextField(
             disabledIndicatorColor = Color.Transparent,
             cursorColor = Color.White,
             focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White
+            unfocusedContainerColor = Color.White,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black
         ),
         leadingIcon = {
             Icon(

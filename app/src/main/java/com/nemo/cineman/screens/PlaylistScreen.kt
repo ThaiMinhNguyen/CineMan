@@ -1,5 +1,7 @@
 package com.nemo.cineman.screens
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,21 +27,27 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -64,6 +72,15 @@ fun PlaylistScreen(
     var onConfirm by remember {
         mutableStateOf(false)
     }
+    var onEdit by remember {
+        mutableStateOf(false)
+    }
+    var name by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var language by remember { mutableStateOf("en") }
+    var listId by remember { mutableStateOf(0) }
+
+
 
     val logOut = {
         mainViewModel.onLogOutHandled()
@@ -71,6 +88,26 @@ fun PlaylistScreen(
             popUpTo(navController.graph.startDestinationRoute!!) { inclusive = true }
             launchSingleTop = true
         }
+    }
+
+    val message by userMovieListViewModel.message.observeAsState()
+    val context = LocalContext.current
+    val isLoading by userMovieListViewModel.isLoading.observeAsState(false)
+    var onConfirmText by remember {
+        mutableStateOf("")
+    }
+    var onConfirmTextDetail by remember {
+        mutableStateOf("")
+    }
+    var onConfirmAction: () -> Unit = {}
+
+    if (message != null) {
+        Toast.makeText(
+            context,
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
+        userMovieListViewModel.onMessageHandled()
     }
 
     Scaffold(
@@ -97,7 +134,7 @@ fun PlaylistScreen(
                 ) {
                     items(movieList.itemCount) { index ->
                         var showMenu by remember { mutableStateOf(false) }
-                        
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -164,14 +201,29 @@ fun PlaylistScreen(
                                                 onClick = {
                                                     showMenu = false
                                                     onConfirm = true
+                                                    onConfirmText = "Clear List"
+                                                    onConfirmTextDetail = "All movies will be removed from this list and this action cannot be undone."
+                                                    onConfirmAction = {
+                                                        Log.d("MyLog", "List ID on clear: ${movieList[index]?.id}")
+                                                        userMovieListViewModel.clearList(movieList[index]?.id ?: 0)
+                                                    }
+
                                                 }
                                             )
                                             DropdownMenuItem(
                                                 text = { Text("Edit") },
                                                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Edit") },
                                                 onClick = {
+                                                    onConfirmText = "Edit List"
                                                     showMenu = false
-                                                    // TODO: Handle edit
+                                                    onEdit = true
+                                                    name = movieList[index]?.name ?: ""
+                                                    description = movieList[index]?.description ?: ""
+                                                    language = movieList[index]?.iso_639_1 ?: ""
+                                                    listId = movieList[index]?.id ?: 0
+                                                    onConfirmAction = {
+                                                        userMovieListViewModel.editList(listId, name, description, language)
+                                                    }
                                                 }
                                             )
                                             DropdownMenuItem(
@@ -179,7 +231,12 @@ fun PlaylistScreen(
                                                 leadingIcon = { Icon(Icons.Default.Delete, contentDescription = "Delete") },
                                                 onClick = {
                                                     showMenu = false
-                                                    // TODO: Handle delete
+                                                    onConfirm = true
+                                                    onConfirmText = "Delete List"
+                                                    onConfirmTextDetail = "This action cannot be undone."
+                                                    onConfirmAction = {
+                                                        userMovieListViewModel.deleteList(movieList[index]?.id ?: 0)
+                                                    }
                                                 }
                                             )
                                         }
@@ -194,7 +251,16 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth(),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        onConfirmText = "Create New List"
+                        onEdit = true
+                        name = ""
+                        description = ""
+                        language = "en"
+                        onConfirmAction = {
+                            userMovieListViewModel.createUserList(name, description, language)
+                        }
+                    },
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -207,20 +273,91 @@ fun PlaylistScreen(
             if (onConfirm){
                 AlertDialog(
                     onDismissRequest = { onConfirm = false },
-                    confirmButton = { /*TODO*/ },
+                    confirmButton = {
+                        TextButton(
+                            onClick = { 
+                                onConfirmAction()
+                                onConfirm = false
+                            }
+                        ) {
+                            Text("Confirm")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { onConfirm = false }
+                        ) {
+                            Text("Cancel")
+                        }
+                    },
                     title = {
                         Text(
-                            text = "Do you want to clear this list?",
+                            text = onConfirmText,
                             style = MaterialTheme.typography.titleMedium
                         )
                     },
                     text = {
                         Text(
-                            text = "All movies will be removed from this list and this action cannot be undone.",
+                            text = onConfirmTextDetail,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 )
+            }
+            if(onEdit) {
+                AlertDialog(
+                    onDismissRequest = { onEdit = false },
+                    title = { Text(onConfirmText) },
+                    text = {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = name,
+                                onValueChange = { name = it },
+                                label = { Text("Name") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            
+                            OutlinedTextField(
+                                value = description,
+                                onValueChange = { description = it },
+                                label = { Text("Description") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            
+                            OutlinedTextField(
+                                value = language,
+                                onValueChange = { language = it },
+                                label = { Text("Language") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                onConfirmAction()
+                                onEdit = false
+                            }
+                        ) {
+                            Text("Save")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { onEdit = false }) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
+            if(isLoading){
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
             }
         },
         bottomBar = {

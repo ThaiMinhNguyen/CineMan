@@ -676,7 +676,7 @@ fun CreateListDialog(
                 )
 
 
-                var language by remember { mutableStateOf("") }
+                var language by remember { mutableStateOf("en") }
                 OutlinedTextField(
                     value = language,
                     onValueChange = { language = it },
@@ -684,15 +684,26 @@ fun CreateListDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Button(
-                    onClick = {
-                        onCreateRequest(name, description, language)
-                        onDismiss()
-                    },
-                    modifier = Modifier
-                        .align(Alignment.End)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Text("Create")
+                    TextButton(
+                        onClick = { onDismiss() }
+                    ) {
+                        Text("Cancel")
+                    }
+                    
+                    Button(
+                        onClick = {
+                            if (name.isNotBlank()) {
+                                onCreateRequest(name, description, language)
+                                onDismiss()
+                            }
+                        }
+                    ) {
+                        Text("Create")
+                    }
                 }
             }
         }

@@ -12,7 +12,6 @@ import com.nemo.cineman.api.UserRepository
 import com.nemo.cineman.entity.DetailMovie
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieList
-import com.nemo.cineman.entity.UserMovieList
 import com.nemo.cineman.entity.VideoResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -199,21 +198,6 @@ class MovieDetailViewModel  @Inject constructor(
 
     fun getUserList() : Flow<PagingData<MovieList>>{
         return userRepository.getAccountList().cachedIn(viewModelScope)
-    }
-
-    fun createUserList(name: String, description: String, language: String){
-        val userMovieList = UserMovieList(name, description, language)
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = userRepository.createUserList(userMovieList)
-            result.onSuccess { response ->
-                _message.value = response.status_message
-                Log.e("MyLog", "Create new list: ${response.list_id}")
-            }.onFailure { exception ->
-                Log.e("MyLog", "Failed to create new list: ${exception.message}")
-            }
-            _isLoading.value = false
-        }
     }
 
     fun addMovieToList(movieId: Int, listId: Int){

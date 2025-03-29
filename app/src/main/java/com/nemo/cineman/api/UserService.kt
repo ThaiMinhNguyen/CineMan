@@ -157,7 +157,7 @@ interface UserService {
     @Headers(
         "accept: application/json"
     )
-    @GET("3/list/{list_id}/clear")
+    @POST("3/list/{list_id}/clear")
     suspend fun clearListItems(
         @Path("list_id") listId: Int,
         @Query("session_id") sessionId: String,
