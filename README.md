@@ -22,7 +22,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
+[![License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 
@@ -192,8 +192,8 @@ Contributions are what make the open source community such an amazing place to l
 
 ### Top contributors:
 
-<a href="https://github.com/othneildrew/Best-README-Template/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
+<a href="https://github.com/ThaiMinhNguyen/CineMan/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ThaiMinhNguyen/CineMan" alt="contrib.rocks image" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -203,7 +203,7 @@ Contributions are what make the open source community such an amazing place to l
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See [`LICENSE`](https://github.com/ThaiMinhNguyen/CineMan/blob/main/LICENSE) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -240,18 +240,18 @@ Use this space to list resources you find helpful and would like to give credit 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/ThaiMinhNguyen/CineMan.svg?style=for-the-badge
 [contributors-url]: https://github.com/ThaiMinhNguyen/CineMan/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/ThaiMinhNguyen/CineMan.svg?style=for-the-badge
 [forks-url]: https://github.com/ThaiMinhNguyen/CineMan/forks
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/ThaiMinhNguyen/CineMan.svg?style=for-the-badge
 [stars-url]: https://github.com/ThaiMinhNguyen/CineMan/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/ThaiMinhNguyen/CineMan.svg?style=for-the-badge
 [issues-url]: https://github.com/ThaiMinhNguyen/CineMan/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://www.google.com/?hl=vi
+[license-shield]: https://img.shields.io/github/license/ThaiMinhNguyen/CineMan.svg?style=for-the-badge
+[license-url]: https://github.com/ThaiMinhNguyen/CineMan/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/thaiminhnguyen2003/ 
+[linkedin-url]: https://www.linkedin.com/in/thaiminhnguyen2003/
 [Kotlin-badge]: https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white
 [Kotlin-url]: https://kotlinlang.org/
 [Compose-badge]: https://img.shields.io/badge/Jetpack%20Compose-4285F4.svg?style=for-the-badge&logo=jetpackcompose&logoColor=white
