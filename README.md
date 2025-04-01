@@ -33,7 +33,7 @@
   <h3 align="center">Cineman - Movie App</h3>
 
   <p align="center">
-    A modern Android movie application built with Jetpack Compose
+    A modern Android movie application powered by TMDB API with Jetpack Compose
   </p>
 </div>
 
@@ -56,12 +56,12 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -73,18 +73,20 @@
 Cineman is a feature-rich Android application that allows users to discover, track, and manage their favorite movies. Built with modern Android development practices and TMDB API integration.
 
 Key Features:
-* Browse popular, top-rated, and upcoming movies
+* Browse popular, trending, and upcoming movies
 * Create and manage custom movie playlists
-* Rate movies and add them to favorites
+* Rate movies and add them to favorites/watchlist
 * Search movies with real-time results
-* Watch movie trailers and share movie details
+* Watch movie trailers
+* View movie details including cast, ratings, and production information
 
 ### Built With
 
-* [![Kotlin][Kotlin-badge]][Kotlin-url]
-* [![Jetpack Compose][Compose-badge]][Compose-url]
-* [![Hilt][Hilt-badge]][Hilt-url]
-* [![Retrofit][Retrofit-badge]][Retrofit-url]
+* ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+* ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4.svg?style=for-the-badge&logo=jetpackcompose&logoColor=white)
+* ![Hilt](https://img.shields.io/badge/Hilt-2196F3.svg?style=for-the-badge&logo=android&logoColor=white)
+* ![Retrofit](https://img.shields.io/badge/Retrofit-48B983.svg?style=for-the-badge&logo=square&logoColor=white)
+* ![Paging 3](https://img.shields.io/badge/Paging%203-3DDC84.svg?style=for-the-badge&logo=android&logoColor=white)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -97,7 +99,7 @@ To get a local copy up and running follow these steps:
 
 ### Prerequisites
 
-* Android Studio Arctic Fox or newer
+* Android Studio Electric Eel or newer
 * JDK 11 or newer
 * Android SDK with minimum API 24
 
@@ -106,12 +108,13 @@ To get a local copy up and running follow these steps:
 1. Get a free API Key from [TMDB](https://www.themoviedb.org/documentation/api)
 2. Clone the repo
    ```sh
-   git clone https://github.com/your_username/cineman.git
+   git clone https://github.com/ThaiMinhNguyen/CineMan.git
    ```
 3. Enter your API key in `local.properties`
    ```properties
    tmdb_api_key=YOUR_API_KEY
    ```
+4. Build and run the project
 
 ## Architecture
 
@@ -121,17 +124,42 @@ The app follows MVVM architecture pattern and uses:
 - Kotlin Flows and Coroutines for async operations
 - Jetpack Compose for declarative UI
 - Hilt for dependency injection
+- Paging 3 for pagination
+- Retrofit for API calls
+
+### Project Structure
+- `api`: Contains API services and repositories
+- `entity`: Data models and entities
+- `screens`: Compose UI components
+- `viewmodel`: ViewModels for managing UI state
+- `ui`: UI related components and themes
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
-<!-- USAGE EXAMPLES -->
-## Usage
+<!-- FEATURES -->
+## Features
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+1. **Authentication**: Login with TMDB account
+2. **Movie Discovery**:
+   - Browse popular, trending, and upcoming movies
+   - View movie details with trailers and cast information
+   
+3. **Personal Lists**:
+   - Create, edit, and delete custom movie lists
+   - Add movies to lists
+   - Clear all movies from a list
+   
+4. **User Interactions**:
+   - Rate movies
+   - Mark movies as favorite
+   - Add movies to watchlist
+   - Share movie details
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+5. **Search**:
+   - Search movies with real-time results
+   - Sort movie results
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -140,15 +168,12 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+- [ ] Add TV show support
+- [ ] Implement offline caching
+- [ ] Add personalized recommendations
+- [ ] Support multiple languages
+- [ ] Implement advanced filtering
+- [ ] Add user profile customization
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -156,6 +181,8 @@ See the [open issues](https://github.com/othneildrew/Best-README-Template/issues
 
 <!-- CONTRIBUTING -->
 ## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -185,9 +212,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - your.email@example.com
+Your Name - thaiminhnguyen2003@gmail.com
 
-Project Link: [https://github.com/your_username/cineman](https://github.com/your_username/cineman)
+Project Link: [https://github.com/ThaiMinhNguyen/CineMan](https://github.com/ThaiMinhNguyen/CineMan)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -214,18 +241,17 @@ Use this space to list resources you find helpful and would like to give credit 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
+[contributors-url]: https://github.com/ThaiMinhNguyen/CineMan/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
+[forks-url]: https://github.com/ThaiMinhNguyen/CineMan/forks
 [stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
+[stars-url]: https://github.com/ThaiMinhNguyen/CineMan/stargazers
 [issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
+[issues-url]: https://github.com/ThaiMinhNguyen/CineMan/issues
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[license-url]: https://www.google.com/?hl=vi
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+[linkedin-url]: https://www.linkedin.com/in/thaiminhnguyen2003/ 
 [Kotlin-badge]: https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white
 [Kotlin-url]: https://kotlinlang.org/
 [Compose-badge]: https://img.shields.io/badge/Jetpack%20Compose-4285F4.svg?style=for-the-badge&logo=jetpackcompose&logoColor=white
