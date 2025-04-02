@@ -11,7 +11,9 @@ import com.nemo.cineman.entity.SharedPreferenceManager
 import com.nemo.cineman.entity.UsernamePasswordBody
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +31,8 @@ class AuthViewModel @Inject constructor(
     val error: LiveData<String?> get() = _error
     private val _navigationEvent = MutableStateFlow<String?>(null)
     val navigationEvent: StateFlow<String?> = _navigationEvent
+
+    val isGuestSession: StateFlow<Boolean> = authRepository.isGuestSession().stateIn(viewModelScope, SharingStarted.Lazily, true)
 
     fun onErrorHandled(){
         _error.value = null

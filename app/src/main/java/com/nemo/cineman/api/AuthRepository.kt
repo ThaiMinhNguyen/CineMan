@@ -5,7 +5,10 @@ import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.RequestTokenBody
 import com.nemo.cineman.entity.RequestTokenResponse
 import com.nemo.cineman.entity.SessionResponse
+import com.nemo.cineman.entity.SharedPreferenceManager
 import com.nemo.cineman.entity.UsernamePasswordBody
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,7 +16,8 @@ import retrofit2.awaitResponse
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val sharedPreferenceManager: SharedPreferenceManager
 ) {
     suspend fun getRequestToken() : Result<RequestTokenResponse?> {
         val response = authService.getRequestToken().awaitResponse()
@@ -55,6 +59,13 @@ class AuthRepository @Inject constructor(
             Result.success(response)
         } catch (e:Exception){
             return Result.failure(e)
+        }
+    }
+
+    fun isGuestSession() : Flow<Boolean> {
+        return flow {
+            val response = sharedPreferenceManager.checkGuestOrNot()
+            emit(response)
         }
     }
 }

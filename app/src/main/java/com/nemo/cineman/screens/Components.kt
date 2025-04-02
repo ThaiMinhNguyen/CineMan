@@ -27,7 +27,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
@@ -58,6 +60,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -79,6 +82,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -89,6 +93,7 @@ import com.nemo.cineman.R
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieList
 import com.nemo.cineman.ui.theme.heavyTitle
+import com.nemo.cineman.viewmodel.AuthViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -388,48 +393,121 @@ fun MenuTopAppBar(
     )
 }
 
+
 @Composable
-fun DefaultBottomBar(navController: NavController){
-    BottomAppBar(contentColor = MaterialTheme.colorScheme.onPrimaryContainer, containerColor = MaterialTheme.colorScheme.primaryContainer) {
-        IconButton(
-            onClick = {
-                navController.navigate("menu") {
-                    launchSingleTop = true
-                }
-            },
-            modifier = Modifier.weight(1f)
+fun DefaultBottomBar(navController: NavController, authViewModel: AuthViewModel = hiltViewModel()){
+    val isGuestSession by authViewModel.isGuestSession.collectAsState()
+    if(isGuestSession) {
+        BottomAppBar(
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            containerColor = MaterialTheme.colorScheme.primaryContainer
         ) {
-            Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
+            IconButton(
+                onClick = {
+                    navController.navigate("menu") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
+            }
+            IconButton(
+                onClick = {
+                    navController.navigate("searchMovie") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+            }
+            IconButton(
+                onClick = {
+                    navController.navigate("accountDetail") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.Default.Person, contentDescription = "Account")
+            }
+            IconButton(
+                onClick = {
+                    navController.navigate("playlist") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "Playlist")
+            }
         }
-        IconButton(
-            onClick = {
-                navController.navigate("searchMovie") {
-                    launchSingleTop = true
-                }
-            },
-            modifier = Modifier.weight(1f)
+    } else {
+        BottomAppBar(
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            containerColor = MaterialTheme.colorScheme.primaryContainer
         ) {
-            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-        }
-        IconButton(
-            onClick = {
-                navController.navigate("accountDetail"){
-                    launchSingleTop = true
-                }
-            },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Account")
-        }
-        IconButton(
-            onClick = { 
-                navController.navigate("playlist"){
-                    launchSingleTop = true
-                }
-             },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "Playlist")
+            IconButton(
+                onClick = {
+                    navController.navigate("menu") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
+            }
+            IconButton(
+                onClick = {
+                    navController.navigate("searchMovie") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+            }
+            IconButton(
+                onClick = {
+                    navController.navigate("favourite") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favourite")
+            }
+            IconButton(
+                onClick = {
+                    navController.navigate("watchlist") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.Default.Bookmarks, contentDescription = "Watchlist")
+            }
+            IconButton(
+                onClick = {
+                    navController.navigate("playlist") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "Playlist")
+            }
+            IconButton(
+                onClick = {
+                    navController.navigate("accountDetail") {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(imageVector = Icons.Default.Person, contentDescription = "Account")
+            }
         }
     }
 }
