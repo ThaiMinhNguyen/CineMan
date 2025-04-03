@@ -12,6 +12,7 @@ import com.nemo.cineman.api.UserRepository
 import com.nemo.cineman.entity.DetailMovie
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieList
+import com.nemo.cineman.entity.TMDBSortOptions
 import com.nemo.cineman.entity.VideoResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -54,9 +55,17 @@ class MovieDetailViewModel  @Inject constructor(
     private val _message = MutableLiveData<String?>(null)
     val message : LiveData<String?> get() = _message
 
-    private val _favouriteMovies = MutableLiveData<List<Movie>>()
-    val favouriteMovies: LiveData<List<Movie>> get() = _favouriteMovies
+    private val _sortUpdateTrigger = MutableLiveData(0)
+    val sortUpdateTrigger: LiveData<Int> get() = _sortUpdateTrigger
 
+    private val _sortOption = MutableLiveData(TMDBSortOptions.CREATE_AT_ASC)
+    val sortOption: LiveData<TMDBSortOptions.SortOption> get() = _sortOption
+
+    fun setSortOption(sortOption: TMDBSortOptions.SortOption) {
+        Log.d("MyLog", "Setting sort option: ${TMDBSortOptions.getDisplayName(sortOption)}")
+        _sortOption.value = sortOption
+        _sortUpdateTrigger.value = _sortUpdateTrigger.value?.plus(1)
+    }
 
     fun onMessageHandled(){
         _message.value = null
@@ -204,7 +213,13 @@ class MovieDetailViewModel  @Inject constructor(
     }
 
     fun getFavouriteMovie() : Flow<PagingData<Movie>>{
-        return userRepository.getFavouriteMovie().cachedIn(viewModelScope)
+        val sortBy = _sortOption.value?.toParameterString() ?: TMDBSortOptions.CREATE_AT_ASC.toParameterString()
+        return userRepository.getFavouriteMovie(sortBy).cachedIn(viewModelScope)
+    }
+
+    fun getWatchlistMovie() : Flow<PagingData<Movie>>{
+        val sortBy = _sortOption.value?.toParameterString() ?: TMDBSortOptions.CREATE_AT_ASC.toParameterString()
+        return userRepository.getWatchlistMovie(sortBy).cachedIn(viewModelScope)
     }
 
     fun addMovieToList(movieId: Int, listId: Int){

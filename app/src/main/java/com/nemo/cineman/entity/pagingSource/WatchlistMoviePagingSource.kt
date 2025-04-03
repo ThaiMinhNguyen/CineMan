@@ -6,8 +6,7 @@ import androidx.paging.PagingState
 import com.nemo.cineman.api.UserService
 import com.nemo.cineman.entity.Movie
 
-
-class FavouriteMoviePagingSource(
+class WatchlistMoviePagingSource(
     private val userService: UserService,
     private val language: String = "en-US",
     private val sessionId: String?,
@@ -29,10 +28,10 @@ class FavouriteMoviePagingSource(
                 Log.e("MyLog", "Error: Invalid session ID")
                 return LoadResult.Error(IllegalStateException("Invalid session ID"))
             }
-            
-            Log.d("MyLog", "Loading favourite movie for session: $sessionId")
 
-            val response = userService.getAllFavouriteMovie(
+            Log.d("MyLog", "Loading watchlist movie for session: $sessionId")
+
+            val response = userService.getAllWatchlistMovie(
                 page = page,
                 sessionId = sessionId,
                 language = language,
@@ -48,7 +47,7 @@ class FavouriteMoviePagingSource(
                 nextKey = if (movies.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {
-            Log.e("MyLog", "Error loading favourite movies", e)
+            Log.e("MyLog", "Error loading watchlist movies", e)
             LoadResult.Error(e)
         }
     }

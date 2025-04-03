@@ -74,6 +74,17 @@ interface UserService {
     ) : MovieResponse
 
     @Headers(
+        "accept: application/json"
+    )
+    @GET("3/account/account_id/watchlist/movies")
+    suspend fun getAllWatchlistMovie(
+        @Query("language") language: String? = "en-Us",
+        @Query("page") page: Int? = 1,
+        @Query("session_id") sessionId: String,
+        @Query("sort_by") sortBy: String? = "created_at.asc"
+    ) : MovieResponse
+
+    @Headers(
         "accept: application/json",
         "Content-Type: application/json;charset=utf-8"
     )

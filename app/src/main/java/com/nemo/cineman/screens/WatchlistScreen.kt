@@ -1,11 +1,9 @@
 package com.nemo.cineman.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -34,7 +32,7 @@ import com.nemo.cineman.viewmodel.MovieDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavouriteMovieScreen (
+fun WatchlistScreen (
     navController: NavController,
     movieDetailViewModel: MovieDetailViewModel = hiltViewModel(),
     mainViewModel: MainViewModel = hiltViewModel(),
@@ -42,7 +40,7 @@ fun FavouriteMovieScreen (
 
     var showSortMenu by remember { mutableStateOf(false) }
     val currentSortOption by movieDetailViewModel.sortOption.observeAsState(TMDBSortOptions.CREATE_AT_ASC)
-    val movies = movieDetailViewModel.getFavouriteMovie().collectAsLazyPagingItems()
+    val movies = movieDetailViewModel.getWatchlistMovie().collectAsLazyPagingItems()
     val sortOptionTrigger by movieDetailViewModel.sortUpdateTrigger.observeAsState(0)
     LaunchedEffect(sortOptionTrigger) {
         movies.refresh()

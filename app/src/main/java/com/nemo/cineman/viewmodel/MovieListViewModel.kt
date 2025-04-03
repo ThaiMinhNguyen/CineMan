@@ -34,7 +34,6 @@ class MovieListViewModel @Inject constructor(
     private val _sortOption = MutableLiveData(TMDBSortOptions.POPULARITY_DESC)
     val sortOption: LiveData<TMDBSortOptions.SortOption> get() = _sortOption
 
-
     private val _sortUpdateTrigger = MutableLiveData(0)
     val sortUpdateTrigger: LiveData<Int> get() = _sortUpdateTrigger
 

@@ -20,6 +20,7 @@ import com.nemo.cineman.entity.UserMovieList
 import com.nemo.cineman.entity.UserMovieListResponse
 import com.nemo.cineman.entity.WatchlistBody
 import com.nemo.cineman.entity.pagingSource.FavouriteMoviePagingSource
+import com.nemo.cineman.entity.pagingSource.WatchlistMoviePagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -156,7 +157,7 @@ class UserRepository @Inject constructor (
         ).flow
     }
 
-    fun getFavouriteMovie() : Flow<PagingData<Movie>>{
+    fun getFavouriteMovie(sortBy: String) : Flow<PagingData<Movie>>{
         val sessionId = sharedPreferenceManager.getSessionId()
             ?: return Pager(
                 config = PagingConfig(
@@ -173,7 +174,28 @@ class UserRepository @Inject constructor (
                 pageSize = 20,
                 enablePlaceholders = true
             ),
-            pagingSourceFactory = { FavouriteMoviePagingSource(userService, sessionId = sessionId) }
+            pagingSourceFactory = { FavouriteMoviePagingSource(userService, sessionId = sessionId, sortBy = sortBy) }
+        ).flow
+    }
+
+    fun getWatchlistMovie(sortBy: String) : Flow<PagingData<Movie>>{
+        val sessionId = sharedPreferenceManager.getSessionId()
+            ?: return Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = true
+                ),
+                pagingSourceFactory = { WatchlistMoviePagingSource(userService, sessionId = null) }
+            ).flow.map { pagingData ->
+                pagingData.filter { false }
+            }
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = { WatchlistMoviePagingSource(userService, sessionId = sessionId, sortBy = sortBy) }
         ).flow
     }
 

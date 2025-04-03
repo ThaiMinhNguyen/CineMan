@@ -9,7 +9,8 @@ object TMDBSortOptions {
         PRIMARY_RELEASE_DATE,
         ORIGINAL_TITLE,
         VOTE_AVERAGE,
-        VOTE_COUNT
+        VOTE_COUNT,
+        CREATE_AT
     }
 
     enum class SortDirection {
@@ -27,6 +28,7 @@ object TMDBSortOptions {
                 SortField.ORIGINAL_TITLE -> "original_title"
                 SortField.VOTE_AVERAGE -> "vote_average"
                 SortField.VOTE_COUNT -> "vote_count"
+                SortField.CREATE_AT -> "created_at"
             }
 
             val directionString = direction.name.lowercase()
@@ -43,6 +45,8 @@ object TMDBSortOptions {
     val VOTE_AVERAGE_DESC = SortOption(SortField.VOTE_AVERAGE, SortDirection.DESC)
     val ORIGINAL_TITLE_ASC = SortOption(SortField.ORIGINAL_TITLE, SortDirection.ASC)
     val ORIGINAL_TITLE_DESC = SortOption(SortField.ORIGINAL_TITLE, SortDirection.DESC)
+    val CREATE_AT_ASC = SortOption(SortField.CREATE_AT, SortDirection.ASC)
+    val CREATE_AT_DESC = SortOption(SortField.CREATE_AT, SortDirection.DESC)
 
     val ALL_OPTIONS = listOf(
         POPULARITY_ASC,
@@ -55,6 +59,13 @@ object TMDBSortOptions {
         ORIGINAL_TITLE_DESC
     )
 
+    val CREATE_OPTION = listOf(
+        CREATE_AT_ASC,
+        CREATE_AT_DESC
+    )
+
+
+
     fun getDisplayName(sortOption: SortOption): String {
         val fieldName = when (sortOption.field) {
             SortField.POPULARITY -> "Độ phổ biến"
@@ -64,6 +75,7 @@ object TMDBSortOptions {
             SortField.ORIGINAL_TITLE -> "Tiêu đề gốc"
             SortField.VOTE_AVERAGE -> "Điểm đánh giá"
             SortField.VOTE_COUNT -> "Số lượt đánh giá"
+            SortField.CREATE_AT -> "Ngày tạo"
         }
 
         val directionName = when (sortOption.direction) {

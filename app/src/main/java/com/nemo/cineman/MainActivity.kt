@@ -21,12 +21,14 @@ import androidx.navigation.navArgument
 import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.screens.AccountDetailScreen
 import com.nemo.cineman.screens.DetailMovieScreen
+import com.nemo.cineman.screens.FavouriteMovieScreen
 import com.nemo.cineman.screens.ListMovieScreen
 import com.nemo.cineman.screens.LoginScreen
 import com.nemo.cineman.screens.MenuScreen
 import com.nemo.cineman.screens.PlaylistScreen
 import com.nemo.cineman.screens.SearchScreen
 import com.nemo.cineman.screens.UserListMovieScreen
+import com.nemo.cineman.screens.WatchlistScreen
 import com.nemo.cineman.screens.WebViewScreen
 import com.nemo.cineman.ui.theme.CineManTheme
 import com.nemo.cineman.ui.theme.playwrite
@@ -125,6 +127,16 @@ class MainActivity : ComponentActivity() {
                                 Log.e("MyLog", "listId is null")
                                 Toast.makeText(LocalContext.current, "listId is null", Toast.LENGTH_SHORT).show()
                             }
+                        }
+                        composable(
+                            route = "favourite"
+                        ) {
+                            FavouriteMovieScreen(navController = navController)
+                        }
+                        composable(
+                            route = "watchlist"
+                        ){
+                            WatchlistScreen(navController = navController)
                         }
                     }
                 }
