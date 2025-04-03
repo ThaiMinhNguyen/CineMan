@@ -1,8 +1,10 @@
-package com.nemo.cineman.entity
+package com.nemo.cineman.entity.pagingSource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.nemo.cineman.api.UserService
+import com.nemo.cineman.entity.MovieList
+import com.nemo.cineman.entity.SharedPreferenceManager
 
 class ListPagingSource(
     private val userService: UserService,

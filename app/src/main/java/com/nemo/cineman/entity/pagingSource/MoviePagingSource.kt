@@ -1,19 +1,26 @@
-package com.nemo.cineman.entity
+package com.nemo.cineman.entity.pagingSource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.nemo.cineman.api.MovieService
+import com.nemo.cineman.entity.ListType
+import com.nemo.cineman.entity.Movie
 
-class SearchMoviePagingSource(
+class MoviePagingSource(
     private val movieService: MovieService,
-    private val keyWord : String
+    private val type: ListType
 ) : PagingSource<Int, Movie>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val page = params.key ?: 1
 
         return try {
-            val response = movieService.searchMoviesByTitle(keyWord)
+            val response = when (type) {
+                ListType.NowPlaying -> movieService.getNowPlayingMovies(page = page)
+                ListType.Popular -> movieService.getPopularMovies(page = page)
+                ListType.TopRated -> movieService.getTopRatedMovies(page = page)
+                ListType.UpComing -> movieService.getUpComingMovies(page = page)
+            }
 
             val movies = response.results
 

@@ -54,6 +54,9 @@ class MovieDetailViewModel  @Inject constructor(
     private val _message = MutableLiveData<String?>(null)
     val message : LiveData<String?> get() = _message
 
+    private val _favouriteMovies = MutableLiveData<List<Movie>>()
+    val favouriteMovies: LiveData<List<Movie>> get() = _favouriteMovies
+
 
     fun onMessageHandled(){
         _message.value = null
@@ -198,6 +201,10 @@ class MovieDetailViewModel  @Inject constructor(
 
     fun getUserList() : Flow<PagingData<MovieList>>{
         return userRepository.getAccountList().cachedIn(viewModelScope)
+    }
+
+    fun getFavouriteMovie() : Flow<PagingData<Movie>>{
+        return userRepository.getFavouriteMovie().cachedIn(viewModelScope)
     }
 
     fun addMovieToList(movieId: Int, listId: Int){

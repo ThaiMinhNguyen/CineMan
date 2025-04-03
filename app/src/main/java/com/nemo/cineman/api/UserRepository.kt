@@ -4,13 +4,14 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.filter
 import com.nemo.cineman.entity.Account
 import com.nemo.cineman.entity.AccountStateResponse
 import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
 import com.nemo.cineman.entity.ChangeItemRequest
-import com.nemo.cineman.entity.ListMoviePagingSource
-import com.nemo.cineman.entity.ListPagingSource
+import com.nemo.cineman.entity.pagingSource.ListMoviePagingSource
+import com.nemo.cineman.entity.pagingSource.ListPagingSource
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieList
 import com.nemo.cineman.entity.Rated
@@ -18,7 +19,9 @@ import com.nemo.cineman.entity.SharedPreferenceManager
 import com.nemo.cineman.entity.UserMovieList
 import com.nemo.cineman.entity.UserMovieListResponse
 import com.nemo.cineman.entity.WatchlistBody
+import com.nemo.cineman.entity.pagingSource.FavouriteMoviePagingSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UserRepository @Inject constructor (
@@ -150,6 +153,27 @@ class UserRepository @Inject constructor (
                 enablePlaceholders = true
             ),
             pagingSourceFactory = { ListPagingSource(userService, sharedPreferenceManager) }
+        ).flow
+    }
+
+    fun getFavouriteMovie() : Flow<PagingData<Movie>>{
+        val sessionId = sharedPreferenceManager.getSessionId()
+            ?: return Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = true
+                ),
+                pagingSourceFactory = { FavouriteMoviePagingSource(userService, sessionId = null) }
+            ).flow.map { pagingData ->
+                pagingData.filter { false }
+            }
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = { FavouriteMoviePagingSource(userService, sessionId = sessionId) }
         ).flow
     }
 

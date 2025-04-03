@@ -6,6 +6,7 @@ import com.nemo.cineman.entity.FavouriteBody
 import com.nemo.cineman.entity.AccountResponse
 import com.nemo.cineman.entity.ChangeItemRequest
 import com.nemo.cineman.entity.MovieListResponse
+import com.nemo.cineman.entity.MovieResponse
 import com.nemo.cineman.entity.Rated
 import com.nemo.cineman.entity.UserDetailListResponse
 import com.nemo.cineman.entity.UserMovieList
@@ -70,7 +71,7 @@ interface UserService {
         @Query("page") page: Int? = 1,
         @Query("session_id") sessionId: String,
         @Query("sort_by") sortBy: String? = "created_at.asc"
-    ) : VideoResponse
+    ) : MovieResponse
 
     @Headers(
         "accept: application/json",

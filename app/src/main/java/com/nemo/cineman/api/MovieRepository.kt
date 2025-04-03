@@ -10,8 +10,8 @@ import com.nemo.cineman.entity.ListType
 import com.nemo.cineman.entity.Movie
 import com.nemo.cineman.entity.MovieCertification
 import com.nemo.cineman.entity.MovieDao
-import com.nemo.cineman.entity.MoviePagingSource
-import com.nemo.cineman.entity.SearchMoviePagingSource
+import com.nemo.cineman.entity.pagingSource.MoviePagingSource
+import com.nemo.cineman.entity.pagingSource.SearchMoviePagingSource
 import com.nemo.cineman.entity.VideoResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

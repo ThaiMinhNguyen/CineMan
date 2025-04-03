@@ -1,15 +1,16 @@
-package com.nemo.cineman.entity
+package com.nemo.cineman.entity.pagingSource
 
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.nemo.cineman.api.UserService
+import com.nemo.cineman.entity.Movie
 
-class ListMoviePagingSource(
+
+class FavouriteMoviePagingSource(
     private val userService: UserService,
-    private val listId: Int,
     private val language: String = "en-US",
-    private val sortBy: String? = null
+    private val sessionId: String?,
 ) : PagingSource<Int, Movie>() {
 
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
@@ -21,27 +22,31 @@ class ListMoviePagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val page = params.key ?: 1
-        
+
         return try {
-            Log.d("MyLog", "Loading list movies for listId: $listId, page: $page, sort: $sortBy")
+            if (sessionId == null) {
+                Log.e("MyLog", "Error: Invalid session ID")
+                return LoadResult.Error(IllegalStateException("Invalid session ID"))
+            }
             
-            val response = userService.getMoviesFromList(
-                listId = listId,
-                language = language,
+            Log.d("MyLog", "Loading favourite movie for session: $sessionId")
+
+            val response = userService.getAllFavouriteMovie(
                 page = page,
-                sortBy = sortBy
+                sessionId = sessionId,
+                language = language
             )
-            
-            val movies = response.items
-            Log.d("MyLog", "Loaded ${movies.size} movies from list $listId \n $movies")
-            
+
+            val movies = response.results
+            Log.d("MyLog", "Loaded ${movies.size} movies")
+
             LoadResult.Page(
                 data = movies,
                 prevKey = if (page == 1) null else page - 1,
                 nextKey = if (movies.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {
-            Log.e("MyLog", "Error loading list movies", e)
+            Log.e("MyLog", "Error loading favourite movies", e)
             LoadResult.Error(e)
         }
     }
